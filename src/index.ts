@@ -29,22 +29,60 @@ import { Account } from "./utils/types";
 import { rint, shuffleArray, createAccounts } from "./utils/utils"
 import logger from "./modules/logger";
 import config from "./config";
+import inquirer from 'inquirer';
 
 const main = async () => {
 
-    const accounts: Account[] = shuffleArray(await createAccounts())
+    let accounts: Account[]
 
-    switch (process.argv.slice(2)[0]) {
+    try {
+        accounts = shuffleArray(await createAccounts())
+    } catch (error) {
+        logger.error('Wrong format of proxies or wallets, most likely empty files.');
+        return
+    }
+
+
+    const choices = [
+        {
+            name: 'Faucet',
+            value: 'faucet',
+        },
+        {
+            name: 'Wallets Warmup',
+            value: 'warmup',
+        },
+        {
+            name: 'Random Onchain',
+            value: 'onchain',
+        },
+        {
+            name: 'Contract Deploy',
+            value: 'deploy',
+        },
+    ];
+
+    const answer = await inquirer.prompt([
+        {
+            type: 'list',
+            name: 'selectedOption',
+            message: 'Choose an action:',
+            choices: choices,
+        },
+    ]);
+
+
+    switch (answer.selectedOption) {
         case "faucet":
             logger.info("Launching faucet...")
             await Promise.all(accounts.map(async account => {
                 const token = await Faucet.solveCaptcha(account.proxy)
                 await Faucet.dripTokens(account, token)
-                new Promise(resolve => setTimeout(() => { }, config.delayFaucet * 1000))
+                new Promise(resolve => setTimeout(() => {}, config.delayFaucet * 1000))
             }))
 
             break
-        case "chain":
+        case "onchain":
             logger.info("Launching onchain actions...")
 
             await Promise.all(accounts.map(async account => {
@@ -121,8 +159,8 @@ const main = async () => {
         default:
             logger.warn(`\nWrong or empty arguments.\n\nExamples:\n"npm run main faucet"\n"npm run main chain"\n"npm run main warmup"\n"npm run main deploy"`)
             break
-    }
 
+    }
 }
 
 main();

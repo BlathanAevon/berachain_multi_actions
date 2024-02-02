@@ -1,5 +1,3 @@
-import path from 'path';
-import { promises as fsPromises } from 'fs';
 const fs = require("fs")
 const { promisify } = require('util');
 import { Proxy, Account } from "./types"
@@ -15,11 +13,15 @@ export function rint(from: number, to: number): number {
 }
 
 export function shuffleArray(array: any[]): any[] {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+    try {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    } catch (error) {
+        throw error
     }
-    return array;
 }
 
 async function readDataFromFile(filePath: string): Promise<string> {
@@ -33,16 +35,21 @@ async function readDataFromFile(filePath: string): Promise<string> {
 }
 
 function createProxy(proxyString: string): Proxy {
-    const [ipAddress, port, username, password] = proxyString.split(":");
-    return {
-        ip: ipAddress,
-        port: Number(port),
-        login: username,
-        password: password,
-    };
+    try {
+
+        const [ipAddress, port, username, password] = proxyString.split(":");
+        return {
+            ip: ipAddress,
+            port: Number(port),
+            login: username,
+            password: password,
+        };
+    } catch (error) {
+        throw error
+    }
 }
 
-export async function createAccounts(): Promise<Account[]> {
+export async function createAccounts(): Promise<Account[] | any> {
     try {
         const walletsData = await readDataFromFile(__dirname + '/../data/wallets.txt');
         const proxiesData = await readDataFromFile(__dirname + '/../data/proxies.txt');
@@ -61,7 +68,6 @@ export async function createAccounts(): Promise<Account[]> {
 
         return accounts;
     } catch (error) {
-        console.error('Error in createAccounts:', error);
-        throw error;
+        throw error
     }
 }

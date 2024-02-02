@@ -13,7 +13,7 @@ This README provides step-by-step instructions for installing the program and co
 2. **Go to your repository**
 
  ```bash
-   cd your-repo
+   cd berachain_multi_actions
  ```
 
 3. **Install dependencies**
@@ -30,8 +30,6 @@ In the `data/proxies.txt`, put you proxies in format: `ip:port:login:pass`
 
 ## Launch
 
-Type in the terminal on of the following commands:
-`npm run main faucet` - get tokens from faucet
-`npm run main chain` - make random onchain actions (unstable)
-`npm run main warmup` - do basic warmup of wallets
-`npm run main deploy` - deploy contract on every wallet
+```bash
+npm start
+```
