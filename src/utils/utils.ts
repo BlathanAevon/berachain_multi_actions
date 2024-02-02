@@ -54,7 +54,7 @@ export async function createAccounts(): Promise<Account[] | any> {
         const walletsData = await readDataFromFile(__dirname + '/../data/wallets.txt');
         const proxiesData = await readDataFromFile(__dirname + '/../data/proxies.txt');
 
-        const proxies: Proxy[] = proxiesData.split('\r\n').map(createProxy);
+        const proxies: Proxy[] = proxiesData.split('\n').map(createProxy);
 
         const accounts: Account[] = walletsData.split('\n').map((key, index) => {
 
