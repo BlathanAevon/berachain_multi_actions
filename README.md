@@ -16,26 +16,15 @@ git clone https://github.com/BlathanAevon/berachain_multi_actions.git
 cd berachain_multi_actions
 ```
 
-3. **Install dependencies**
+# Run the program
 
-```bash
-npm i
+## On Windows:
+```powershell
+run.bat
 ```
 
-## Configuration
-
-In the `config.ts` file you will find all the settings<br>
-
-In the `data/wallets.txt`, put your private keys<br>
-
-In the `data/proxies.txt`, put you proxies in format: `ip:port:login:pass`<br>
-
-## Launch
+## On Linux/MacOS:
 
 ```bash
-npm start
+./run.sh
 ```
-
-# Contribution
-
-*Please feel free to contribute into this branch*
