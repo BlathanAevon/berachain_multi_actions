@@ -129,6 +129,3 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-
-src/data/wallets.txt
-src/data/proxies.txt
