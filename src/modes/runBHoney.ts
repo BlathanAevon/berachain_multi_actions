@@ -1,10 +1,10 @@
 import { Account } from "../utils/types";
 import { BERA, BHONEY, HONEY } from "../blockchain_data/tokens";
-import { Wallet } from "../modules/wallet";
+import { Wallet } from "../modules/classes/wallet";
 import { rint, sleep } from "../utils/utils";
-import { BexSwap } from "../modules/bexSwap";
-import { Berps } from "../modules/berps";
-import { Vault } from "../modules/vault";
+import { BexSwap } from "../modules/dapps/bexSwap";
+import { Berps } from "../modules/dapps/berps";
+import { Vault } from "../modules/dapps/vault";
 import config from "../config";
 import logger from "../utils/logger";
 

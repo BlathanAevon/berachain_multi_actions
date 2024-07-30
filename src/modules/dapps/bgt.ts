@@ -1,10 +1,10 @@
 import { ethers } from "ethers-ts";
-import { BGT_REWARD_ABI, ERC20ABI } from "../blockchain_data/abi";
-import { BEND_BGT_REWARD, BERPS, BEX } from "../blockchain_data/contracts";
-import { BGTT, HONEY } from "../blockchain_data/tokens";
-import { BaseApp } from "./classes";
-import { StationContract } from "../utils/types";
-import { Wallet } from "./wallet";
+import { BGT_REWARD_ABI, ERC20ABI } from "../../blockchain_data/abi";
+import { BEND_BGT_REWARD, BERPS, BEX } from "../../blockchain_data/contracts";
+import { BGTT, HONEY } from "../../blockchain_data/tokens";
+import { BaseApp } from "../classes/baseApp";
+import { StationContract } from "../../utils/types";
+import { Wallet } from "../classes/wallet";
 
 export class BGT extends BaseApp {
   bendRewardContract: ethers.Contract;

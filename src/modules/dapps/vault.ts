@@ -1,9 +1,9 @@
-import { VAULT_ABI } from "../blockchain_data/abi";
-import { VAULT } from "../blockchain_data/contracts";
-import { Wallet } from "./wallet";
+import { VAULT_ABI } from "../../blockchain_data/abi";
+import { VAULT } from "../../blockchain_data/contracts";
+import { Wallet } from "../classes/wallet";
 import { ethers } from "ethers-ts";
-import { HONEY } from "../blockchain_data/tokens";
-import { BaseApp } from "./classes";
+import { HONEY } from "../../blockchain_data/tokens";
+import { BaseApp } from "../classes/baseApp";
 
 export class Vault extends BaseApp {
   constructor(wallet: Wallet) {

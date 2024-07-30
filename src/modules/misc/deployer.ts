@@ -1,6 +1,6 @@
-import { Wallet } from "./wallet";
+import { Wallet } from "../classes/wallet";
 import { ethers } from "ethers-ts";
-import { CONTRACT_ABI, CONTRACT_BYTECODE } from "../blockchain_data/abi";
+import { CONTRACT_ABI, CONTRACT_BYTECODE } from "../../blockchain_data/abi";
 
 export class Deployer {
   private wallet: Wallet;

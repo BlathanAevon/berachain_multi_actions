@@ -1,9 +1,9 @@
-import { BEND_ABI } from "../blockchain_data/abi";
-import { BEND_ADDRESS } from "../blockchain_data/contracts";
-import { Wallet } from "./wallet";
+import { BEND_ABI } from "../../blockchain_data/abi";
+import { BEND_ADDRESS } from "../../blockchain_data/contracts";
+import { Wallet } from "../classes/wallet";
 import { ethers } from "ethers-ts";
-import { BaseApp } from "./classes";
-import { HONEY } from "../blockchain_data/tokens";
+import { BaseApp } from "../classes/baseApp";
+import { HONEY } from "../../blockchain_data/tokens";
 
 export class Bend extends BaseApp {
   constructor(wallet: Wallet) {

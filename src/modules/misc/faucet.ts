@@ -1,7 +1,7 @@
 const randomUseragent = require("random-useragent");
-import { CaptchaResponse, Account } from "../utils/types";
+import { CaptchaResponse, Account } from "../../utils/types";
 import axios from "axios";
-import config from "../config";
+import config from "../../config";
 
 export class Faucet {
   static async solveCaptcha(): Promise<any> {

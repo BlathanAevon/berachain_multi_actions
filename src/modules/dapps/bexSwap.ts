@@ -1,11 +1,11 @@
 import { ethers } from "ethers-ts";
-import { Swap } from "../utils/types";
-import { BERA, WBERA } from "../blockchain_data/tokens";
-import { DEXABI, WBERA_CONTRACT_ABI } from "../blockchain_data/abi";
-import { DEXADDRESS, WBERA_CONTRACT } from "../blockchain_data/contracts";
-import { Wallet } from "./wallet";
-import { BaseApp } from "./classes";
-import { getSwapPath } from "../utils/utils";
+import { Swap } from "../../utils/types";
+import { BERA, WBERA } from "../../blockchain_data/tokens";
+import { DEXABI, WBERA_CONTRACT_ABI } from "../../blockchain_data/abi";
+import { DEXADDRESS, WBERA_CONTRACT } from "../../blockchain_data/contracts";
+import { Wallet } from "../classes/wallet";
+import { BaseApp } from "../classes/baseApp";
+import { getSwapPath } from "../../utils/utils";
 
 export class BexSwap extends BaseApp {
   constructor(wallet: Wallet) {

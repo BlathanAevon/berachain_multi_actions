@@ -1,5 +1,5 @@
 import { Account } from "../utils/types";
-import { Wallet } from "../modules/wallet";
+import { Wallet } from "../modules/classes/wallet";
 import {
   BGTT,
   BHONEY,

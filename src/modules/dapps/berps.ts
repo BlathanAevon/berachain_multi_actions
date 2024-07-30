@@ -1,9 +1,9 @@
-import { BERPS_ABI } from "../blockchain_data/abi";
-import { BERPS } from "../blockchain_data/contracts";
-import { Wallet } from "./wallet";
+import { BERPS_ABI } from "../../blockchain_data/abi";
+import { BERPS } from "../../blockchain_data/contracts";
+import { Wallet } from "../classes/wallet";
 import { ethers } from "ethers-ts";
-import { BHONEY } from "../blockchain_data/tokens";
-import { BaseApp } from "./classes";
+import { BHONEY } from "../../blockchain_data/tokens";
+import { BaseApp } from "../classes/baseApp";
 
 export class Berps extends BaseApp {
   constructor(wallet: Wallet) {

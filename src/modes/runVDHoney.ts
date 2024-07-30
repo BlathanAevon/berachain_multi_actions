@@ -7,12 +7,12 @@ import {
   WETH,
   WBERA,
 } from "../blockchain_data/tokens";
-import { Wallet } from "../modules/wallet";
+import { Wallet } from "../modules/classes/wallet";
 import { randomChoice, rint, sleep } from "../utils/utils";
 import config from "../config";
-import { Bend } from "../modules/bend";
+import { Bend } from "../modules/dapps/bend";
 import logger from "../utils/logger";
-import { BexSwap } from "../modules/bexSwap";
+import { BexSwap } from "../modules/dapps/bexSwap";
 
 export const runVDHoney = async (accounts: Account[]): Promise<void> => {
   await Promise.all(

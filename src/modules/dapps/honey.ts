@@ -1,9 +1,9 @@
 import { ethers } from "ethers-ts";
-import { HONEYABI } from "../blockchain_data/abi";
-import { HONEY_CONTRACT } from "../blockchain_data/contracts";
-import { Wallet } from "./wallet";
-import { HONEY, STGUSDC } from "../blockchain_data/tokens";
-import { BaseApp } from "./classes";
+import { HONEYABI } from "../../blockchain_data/abi";
+import { HONEY_CONTRACT } from "../../blockchain_data/contracts";
+import { Wallet } from "../classes/wallet";
+import { HONEY, STGUSDC } from "../../blockchain_data/tokens";
+import { BaseApp } from "../classes/baseApp";
 
 export class Honey extends BaseApp {
   constructor(wallet: Wallet) {
