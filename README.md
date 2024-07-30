@@ -31,6 +31,8 @@ cd berachain_multi_actions
 
 3. **Configuration**
 
+Rename `template.proxies.txt` and `template.wallets.txt` in `src/data`
+
 Set wallets and proxies in `src/data/wallets.txt` and `src/data/proxies.txt`
 - for wallets: `private key`
 - for proxies: `ip:port:login:pass`
