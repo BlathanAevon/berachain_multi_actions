@@ -33,7 +33,10 @@ export class BGT extends BaseApp {
   async getBendBgtReward(): Promise<void> {
     try {
       const transaction = await this.bendRewardContract.getReward(
-        this.wallet.address
+        this.wallet.address,
+        {
+          gasLimit: 200000,
+        }
       );
 
       await this.wallet.waitForTx("Get BGT reward FROM BEND", transaction);
@@ -46,7 +49,10 @@ export class BGT extends BaseApp {
   async getBexBgtReward(): Promise<void> {
     try {
       const transaction = await this.bexRewardContract.getReward(
-        this.wallet.address
+        this.wallet.address,
+        {
+          gasLimit: 200000,
+        }
       );
 
       await this.wallet.waitForTx("Get BGT reward FROM BEX", transaction);
@@ -59,7 +65,10 @@ export class BGT extends BaseApp {
   async getBerpsBgtReward(): Promise<void> {
     try {
       const transaction = await this.berpsRewardContract.getReward(
-        this.wallet.address
+        this.wallet.address,
+        {
+          gasLimit: 200000,
+        }
       );
 
       await this.wallet.waitForTx("Get BGT reward FROM BERPS", transaction);
