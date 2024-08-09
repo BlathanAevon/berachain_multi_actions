@@ -21,40 +21,45 @@ const main = async () => {
     return;
   }
 
-  const answer = await inquirer.prompt([
-    {
-      type: "list",
-      name: "selectedOption",
-      message: "Choose an action:",
-      choices: choices,
-    },
-  ]);
+  while (true) {
+    const answer = await inquirer.prompt([
+      {
+        type: "list",
+        name: "selectedOption",
+        message: "Choose an action:",
+        choices: choices,
+      },
+    ]);
 
-  switch (answer.selectedOption) {
-    case "faucet":
-      logger.info("Launching faucet...");
-      runFaucet(accounts);
-      break;
-    case "deploy":
-      logger.info("Launching deploy...");
-      runDeploy(accounts);
-      break;
-    case "bhoney":
-      runBHoney(accounts);
-      break;
-    case "vdhoney":
-      runVDHoney(accounts);
-      break;
-    case "bgt":
-      runGetBgtRewards(accounts);
-      break;
-    case "balance":
-      logger.info("Getting balances...");
-      runBalances(accounts);
-      break;
-    default:
-      logger.warn("\nWrong or empty arguments.");
-      break;
+    switch (answer.selectedOption) {
+      case "faucet":
+        logger.info("Launching faucet...");
+        await runFaucet(accounts);
+        break;
+      case "deploy":
+        logger.info("Launching deploy...");
+        await runDeploy(accounts);
+        break;
+      case "bhoney":
+        await runBHoney(accounts);
+        break;
+      case "vdhoney":
+        await runVDHoney(accounts);
+        break;
+      case "bgt":
+        await runGetBgtRewards(accounts);
+        break;
+      case "balance":
+        logger.info("Getting balances...");
+        await runBalances(accounts);
+        break;
+      case "exit":
+        logger.info("Goodbye!");
+        process.exit(1);
+      default:
+        logger.warn("\nWrong or empty arguments.");
+        break;
+    }
   }
 };
 

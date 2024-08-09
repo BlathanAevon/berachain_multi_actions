@@ -23,4 +23,8 @@ export const choices = [
     name: "Contract Deployment",
     value: "deploy",
   },
+  {
+    name: "Exit",
+    value: "exit",
+  },
 ];
