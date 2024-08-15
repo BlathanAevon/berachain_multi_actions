@@ -78,7 +78,7 @@ export class BGT extends BaseApp {
     }
   }
 
-  async delegate(
+  async delegateHoney(
     amountToDelegate: number,
     contract: StationContract
   ): Promise<any> {
@@ -95,7 +95,7 @@ export class BGT extends BaseApp {
 
     if (honeyBalance < amountToDelegate) {
       throw new Error(
-        `${this.delegate.name}: Amount exceeds available HONEY balance. Balance: ${honeyBalance}`
+        `${this.delegateHoney.name}: Amount exceeds available HONEY balance. Balance: ${honeyBalance}`
       );
     }
 
@@ -116,6 +116,39 @@ export class BGT extends BaseApp {
       );
 
       await this.wallet.waitForTx("Delegate HONEY", transaction);
+
+      return;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async delegateBGT(amountToDelegate: number): Promise<any> {
+    const balance = await this.wallet.getTokenBalance(BGTT);
+    const validator = "0x40495A781095932e2FC8dccA69F5e358711Fdd41"; //HoneJar Validator
+
+    const delegateContract = new ethers.Contract(
+      BGTT,
+      BGT_REWARD_ABI,
+      this.wallet
+    );
+
+    if (balance < amountToDelegate) {
+      throw new Error(
+        `${this.delegateBGT.name}: Amount exceeds available BGT balance. Balance: ${balance}`
+      );
+    }
+
+    try {
+      const amount = ethers.utils.parseUnits(
+        amountToDelegate.toString(),
+        await this.wallet.getTokenDecimals(BGTT)
+      );
+      const transaction = await delegateContract.queueBoost(validator, amount, {
+        gasLimit: 600000 + Math.floor(Math.random() * 10000),
+      });
+
+      await this.wallet.waitForTx("Delegate BGT to Validator", transaction);
 
       return;
     } catch (error) {

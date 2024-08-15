@@ -20,6 +20,10 @@ export const choices = [
     value: "balance",
   },
   {
+    name: "Delegate BGT to Validator",
+    value: "delegate",
+  },
+  {
     name: "Contract Deployment",
     value: "deploy",
   },

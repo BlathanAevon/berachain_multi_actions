@@ -824,6 +824,24 @@ export const BGT_REWARD_ABI = [
     outputs: [],
     stateMutability: "nonpayable",
   },
+  {
+    type: "function",
+    name: "queueBoost",
+    inputs: [
+      {
+        name: "validator",
+        type: "address",
+        internalType: "address",
+      },
+      {
+        name: "amount",
+        type: "uint128",
+        internalType: "uint128",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
 ];
 
 export const BEND_BORROW_ABI = [

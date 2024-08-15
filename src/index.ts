@@ -10,6 +10,7 @@ import { runBHoney } from "./modes/runBHoney";
 import { choices } from "./utils/choices";
 import { runGetBgtRewards } from "./modes/runGetBgtReward";
 import { runVDHoney } from "./modes/runVDHoney";
+import { runDelegate } from "./modes/runDelegate";
 
 const main = async () => {
   let accounts: Account[];
@@ -48,6 +49,10 @@ const main = async () => {
         break;
       case "bgt":
         await runGetBgtRewards(accounts);
+        break;
+      case "delegate":
+        logger.info("Delegating BGT...");
+        await runDelegate(accounts);
         break;
       case "balance":
         logger.info("Getting balances...");
