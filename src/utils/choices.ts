@@ -24,6 +24,10 @@ export const choices = [
     value: "delegate",
   },
   {
+    name: "Activate Boost (after delegating)",
+    value: "boost",
+  },
+  {
     name: "Contract Deployment",
     value: "deploy",
   },

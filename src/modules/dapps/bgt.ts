@@ -125,7 +125,7 @@ export class BGT extends BaseApp {
 
   async delegateBGT(amountToDelegate: number): Promise<any> {
     const balance = await this.wallet.getTokenBalance(BGTT);
-    const validator = "0x40495A781095932e2FC8dccA69F5e358711Fdd41"; //HoneJar Validator
+    const validator = "0x40495A781095932e2FC8dccA69F5e358711Fdd41";
 
     const delegateContract = new ethers.Contract(
       BGTT,
@@ -144,11 +144,34 @@ export class BGT extends BaseApp {
         amountToDelegate.toString(),
         await this.wallet.getTokenDecimals(BGTT)
       );
-      const transaction = await delegateContract.queueBoost(validator, amount, {
+      const transaction = await delegateContract.queueBoost(
+        validator, // HoneyJar validator
+        amount,
+        {
+          gasLimit: 600000 + Math.floor(Math.random() * 10000),
+        }
+      );
+
+      await this.wallet.waitForTx("Delegate BGT to Validator", transaction);
+
+      return;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async activateBoost(): Promise<any> {
+    const balance = await this.wallet.getTokenBalance(BGTT);
+    const validator = "0x40495A781095932e2FC8dccA69F5e358711Fdd41"; //HoneJar Validator
+
+    const conract = new ethers.Contract(BGTT, BGT_REWARD_ABI, this.wallet);
+
+    try {
+      const transaction = await conract.activateBoost(validator, {
         gasLimit: 600000 + Math.floor(Math.random() * 10000),
       });
 
-      await this.wallet.waitForTx("Delegate BGT to Validator", transaction);
+      await this.wallet.waitForTx("Activate Boost", transaction);
 
       return;
     } catch (error) {

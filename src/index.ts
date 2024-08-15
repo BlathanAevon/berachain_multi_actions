@@ -11,6 +11,7 @@ import { choices } from "./utils/choices";
 import { runGetBgtRewards } from "./modes/runGetBgtReward";
 import { runVDHoney } from "./modes/runVDHoney";
 import { runDelegate } from "./modes/runDelegate";
+import { runActivateBoost } from "./modes/runActivateBoost";
 
 const main = async () => {
   let accounts: Account[];
@@ -57,6 +58,10 @@ const main = async () => {
       case "balance":
         logger.info("Getting balances...");
         await runBalances(accounts);
+        break;
+      case "boost":
+        logger.info("Activating boost...");
+        await runActivateBoost(accounts);
         break;
       case "exit":
         logger.info("Goodbye!");
