@@ -78,6 +78,11 @@ export class BexSwap extends BaseApp {
     }
 
     const tokenFromBalance = await this.wallet.getTokenBalance(tokenFrom);
+
+    if (wrap) {
+      amount = amount - (amount - tokenFromBalance);
+    }
+
     if (tokenFromBalance < amount || tokenFromBalance == 0) {
       throw new Error(
         `Balance is not enough to swap. BALANCE: ${tokenFromBalance}`
