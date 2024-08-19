@@ -1,8 +1,8 @@
+import { readFileSync } from "fs";
+import { BigNumber, ethers } from "ethers";
+import { Proxy, Account } from "./types";
 const randomUseragent = require("random-useragent");
 import axios from "axios";
-import { readFileSync } from "fs";
-import { Proxy, Account } from "./types";
-import { BigNumber, ethers } from "ethers-ts";
 
 export function rint(from: number, to: number): number {
   if (from > to) {
@@ -10,7 +10,6 @@ export function rint(from: number, to: number): number {
   }
 
   const randomValue = from + Math.random() * (to - from);
-
   const areIntegers = Number.isInteger(from) && Number.isInteger(to);
 
   return areIntegers ? Math.round(randomValue) : randomValue;
@@ -26,28 +25,24 @@ export const formatAmount = async (
   decimalsFormat: number = 10
 ) => {
   const decimals = await contract.decimals();
-
   const balanceInUnits = ethers.utils.formatUnits(amount, decimals);
 
   return balanceInUnits.slice(0, decimalsFormat);
 };
 
 export function shuffleArray(array: any[]): void {
-  try {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-  } catch (error) {
-    throw error;
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
 }
 
 export const getDataFromFile = (filepath: string): string[] => {
   try {
-    return readFileSync(filepath, "utf-8")
+    return readFileSync(filepath, "utf8")
       .split("\n")
-      .filter((line) => line.length > 5);
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0);
   } catch (error) {
     throw error;
   }
@@ -86,15 +81,20 @@ export async function createAccounts(
 
     const accounts: Account[] = walletsData
       .map((key, index) => {
-        const wallet = new ethers.Wallet(key);
+        try {
+          const wallet = new ethers.Wallet(key);
 
-        let proxy: Proxy = proxies[index];
-        const account: Account = {
-          wallet: wallet.address,
-          key: key,
-          proxy: proxy,
-        };
-        return account;
+          let proxy: Proxy = proxies[index];
+          const account: Account = {
+            wallet: wallet.address,
+            key: key,
+            proxy: proxy,
+          };
+          return account;
+        } catch (error) {
+          console.error("Error processing key:", key, error);
+          return null;
+        }
       })
       .filter((account): account is Account => Boolean(account));
 
