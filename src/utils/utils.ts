@@ -45,13 +45,9 @@ export function shuffleArray(array: any[]): void {
 
 export const getDataFromFile = (filepath: string): string[] => {
   try {
-    return readFileSync(filepath, "utf8")
+    return readFileSync(filepath, "utf-8")
       .split("\n")
-      .filter((line) => {
-        if (line.length > 5) {
-          return line;
-        }
-      });
+      .filter((line) => line.length > 5);
   } catch (error) {
     throw error;
   }
@@ -90,19 +86,15 @@ export async function createAccounts(
 
     const accounts: Account[] = walletsData
       .map((key, index) => {
-        try {
-          const wallet = new ethers.Wallet(key);
+        const wallet = new ethers.Wallet(key);
 
-          let proxy: Proxy = proxies[index];
-          const account: Account = {
-            wallet: wallet.address,
-            key: key,
-            proxy: proxy,
-          };
-          return account;
-        } catch (error) {
-          throw new Error("Invalid private key/s format");
-        }
+        let proxy: Proxy = proxies[index];
+        const account: Account = {
+          wallet: wallet.address,
+          key: key,
+          proxy: proxy,
+        };
+        return account;
       })
       .filter((account): account is Account => Boolean(account));
 
