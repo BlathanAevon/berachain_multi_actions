@@ -114,7 +114,7 @@ export async function sleep(ms) {
 export async function getSwapPath(
   tokenFrom: string,
   tokenTo: string,
-  amount: ethers.BigNumber
+  amount
 ): Promise<any> {
   const headers = {
     authority: "https://bartio-bex-router.berachain-devnet.com",

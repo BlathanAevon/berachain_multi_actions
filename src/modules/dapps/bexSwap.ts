@@ -1,5 +1,4 @@
 import { ethers } from "ethers-ts";
-import { Swap } from "../../utils/types";
 import { BERA, WBERA } from "../../blockchain_data/tokens";
 import { DEXABI, WBERA_CONTRACT_ABI } from "../../blockchain_data/abi";
 import { DEXADDRESS, WBERA_CONTRACT } from "../../blockchain_data/contracts";
@@ -63,75 +62,69 @@ export class BexSwap extends BaseApp {
     tokenTo: string,
     amount: number
   ): Promise<any> {
-    const unwrap: boolean = tokenTo == BERA ? true : false;
-    const wrap: boolean = tokenFrom == BERA ? true : false;
+    let tokenFromBalance;
+    let swapAmount;
+    let swapsArray;
 
-    if (tokenFrom == BERA) {
-      tokenFrom = WBERA;
-      if (wrap) {
-        try {
-          await this.wrapBera(amount);
-        } catch (error) {
-          throw error;
-        }
+    if (tokenFrom !== BERA) {
+      tokenFromBalance = await this.wallet.getTokenBalance(tokenFrom);
+
+      if (
+        Number(await this.wallet.getAllowance(tokenFrom, DEXADDRESS)) < amount
+      ) {
+        await this.wallet.approve(DEXADDRESS, tokenFrom, 999999999);
       }
-    }
 
-    const tokenFromBalance = await this.wallet.getTokenBalance(tokenFrom);
+      swapAmount = ethers.utils.parseUnits(
+        amount.toString(),
+        await this.wallet.getTokenDecimals(tokenFrom)
+      );
+    } else {
+      tokenFromBalance = await this.wallet.getBalance();
 
-    if (wrap) {
-      amount = amount - (amount - tokenFromBalance);
+      swapAmount = ethers.utils.parseEther(amount.toString());
     }
 
     if (tokenFromBalance < amount || tokenFromBalance == 0) {
       throw new Error(
         `Balance is not enough to swap. BALANCE: ${tokenFromBalance}`
       );
-    } else if (
-      Number(await this.wallet.getAllowance(tokenFrom, DEXADDRESS)) < amount
-    ) {
-      await this.wallet.approve(DEXADDRESS, tokenFrom, 999999999);
     }
 
-    const swapAmount = ethers.utils.parseUnits(
-      amount.toString(),
-      await this.wallet.getTokenDecimals(tokenFrom)
+    const response = await getSwapPath(
+      tokenFrom == BERA ? WBERA : tokenFrom,
+      tokenTo == BERA ? WBERA : tokenTo,
+      Number(swapAmount).toString()
     );
-
-    const response = await getSwapPath(tokenFrom, tokenTo, swapAmount);
 
     if (response.data.steps == null) {
       throw new Error("Such swap is not available at the moment");
     } else {
-      const swaps: Swap[] = [];
-      const data = response.data.steps;
-
-      for (let swap of data) {
-        swaps.push({
-          poolIdx: swap.poolIdx,
-          base: swap.base,
-          quote: swap.quote,
-          isBuy: swap.isBuy,
-        });
+      if (tokenFrom !== BERA) {
+        swapsArray = response.data.steps;
+      } else {
+        swapsArray = [
+          {
+            poolIdx: "36000",
+            base: tokenTo.toString(),
+            quote: "0x0000000000000000000000000000000000000000",
+            isBuy: false,
+          },
+        ];
       }
 
       try {
         const transaction: any = await this.contract.multiSwap(
-          swaps,
+          swapsArray,
           swapAmount,
           0,
           {
-            gasLimit: 900000 + Math.floor(Math.random() * 10000),
-            value: 0,
+            gasLimit: 2000000,
+            value: tokenFrom != BERA ? 0 : swapAmount,
           }
         );
 
         await this.wallet.waitForTx("Swap", transaction);
-
-        if (unwrap) {
-          const tokenBalance = await this.wallet.getTokenBalance(WBERA);
-          await this.unwrapBera(tokenBalance);
-        }
       } catch (error) {
         throw error;
       }
