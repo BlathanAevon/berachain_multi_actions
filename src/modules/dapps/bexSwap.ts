@@ -1,5 +1,5 @@
 import { ethers } from "ethers-ts";
-import { BERA, WBERA, WBTC } from "../../blockchain_data/tokens";
+import { BERA, STGUSDC, WBERA, WBTC } from "../../blockchain_data/tokens";
 import {
   DEXABI,
   LIQUIDITY_ABI,
@@ -15,6 +15,8 @@ import { Wallet } from "../classes/wallet";
 import { BaseApp } from "../classes/baseApp";
 import { getSwapPath } from "../../utils/utils";
 import { AddLiquidityParameters } from "../../utils/types";
+import tokenNames from "../../blockchain_data/tokenNames";
+import logger from "../../utils/logger";
 
 export class BexSwap extends BaseApp {
   constructor(wallet: Wallet) {
@@ -113,14 +115,25 @@ export class BexSwap extends BaseApp {
       if (tokenFrom !== BERA) {
         swapsArray = response.data.steps;
       } else {
-        swapsArray = [
-          {
-            poolIdx: tokenTo == WBTC ? "36001" : "36000",
-            base: tokenTo.toString(),
-            quote: "0x0000000000000000000000000000000000000000",
-            isBuy: false,
-          },
-        ];
+        if (tokenTo == STGUSDC) {
+          swapsArray = [
+            {
+              poolIdx: "36000",
+              base: BERA,
+              quote: STGUSDC,
+              isBuy: true,
+            },
+          ];
+        } else {
+          swapsArray = [
+            {
+              poolIdx: tokenTo == WBTC ? "36001" : "36000",
+              base: tokenTo.toString(),
+              quote: "0x0000000000000000000000000000000000000000",
+              isBuy: false,
+            },
+          ];
+        }
       }
 
       try {
@@ -166,13 +179,13 @@ export class BexSwap extends BaseApp {
 
       if (
         Number(
-          await this.wallet.getAllowance(firstTokenAddress, LIQUIDITY_ROUTER)
+          await this.wallet.getAllowance(firstTokenAddress, APPROVE_LIQUIDITY)
         ) < parameters.amountToAdd
       ) {
         await this.wallet.approve(
-          LIQUIDITY_ROUTER,
+          APPROVE_LIQUIDITY,
           firstTokenAddress,
-          999999999
+          999999999999999
         );
       }
     }
@@ -189,11 +202,11 @@ export class BexSwap extends BaseApp {
 
       if (
         Number(
-          await this.wallet.getAllowance(secondTokenAddress, LIQUIDITY_ROUTER)
+          await this.wallet.getAllowance(secondTokenAddress, APPROVE_LIQUIDITY)
         ) < parameters.amountToAdd
       ) {
         await this.wallet.approve(
-          LIQUIDITY_ROUTER,
+          APPROVE_LIQUIDITY,
           secondTokenAddress,
           999999999
         );
@@ -201,12 +214,7 @@ export class BexSwap extends BaseApp {
     }
 
     if (firstTokenAddress == BERA || secondTokenAddress == BERA) {
-      const beraBalance: number =
-        Number(
-          (Number(await this.wallet.getBalance()) / 10 ** 18)
-            .toString()
-            .slice(0, 10)
-        ) * 0.98;
+      const beraBalance: number = await this.wallet.getFormattedEtherBalance();
 
       if (beraBalance < parameters.amountToAdd) {
         throw new Error(
@@ -270,6 +278,9 @@ export class BexSwap extends BaseApp {
     );
 
     try {
+      logger.warn(
+        `Trying to add ${tokenNames[firstTokenAddress]} and ${tokenNames[secondTokenAddress]} to pool`
+      );
       const transaction: any = await contract.userCmd(128, poolCmdData, {
         gasLimit: 2000000,
         value:

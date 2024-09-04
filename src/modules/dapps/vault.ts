@@ -72,16 +72,18 @@ export class Vault extends BaseApp {
       parameters.amountToAdd
     ) {
       throw `${this.depositLiquidityTokens.name} "Amount exceeds available token balance"`;
-    } else if (
+    }
+
+    if (
       Number(
         await this.wallet.getAllowance(
           parameters.liquidityTokenAddress,
-          parameters.poolAddress
+          parameters.vaultAddress
         )
       ) < parameters.amountToAdd
     ) {
       await this.wallet.approve(
-        parameters.poolAddress,
+        parameters.vaultAddress,
         parameters.liquidityTokenAddress,
         999999999
       );

@@ -29,16 +29,26 @@ export const runLiquidityFarm = async (accounts: Account[]): Promise<void> => {
 
       await sleep(rint(1000, config.delayOnChainTo * 1000));
 
-      const beraBalance: number =
-        Number(
-          (Number(await wallet.getBalance()) / 10 ** 18).toString().slice(0, 10)
-        ) * 0.98;
-
-      await bex.swapByApi(BERA, HONEY, beraBalance * rint(0.1, 0.5));
-      await bex.swapByApi(BERA, STGUSDC, beraBalance * rint(0.1, 0.5));
+      const beraBalance: number = await wallet.getFormattedEtherBalance();
 
       const pairs = ["honeyWbera", "honeyUsdc"];
       const pairChoice = randomChoice(pairs);
+
+      // try {
+      //   switch (pairChoice) {
+      //     case "honeyWbera":
+      //       await bex.swapByApi(BERA, HONEY, beraBalance * rint(0.1, 0.5));
+      //       break;
+      //     case "honeyUsdc":
+      //       await bex.swapByApi(BERA, STGUSDC, beraBalance * rint(0.1, 0.5));
+      //       break;
+      //     default:
+      //       break;
+      //   }
+      // } catch (error) {
+      //   logger.error(error);
+      //   return;
+      // }
 
       const addLiquidityParameters = {
         honeyWbera: {

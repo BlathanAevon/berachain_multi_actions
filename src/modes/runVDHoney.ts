@@ -31,15 +31,13 @@ export const runVDHoney = async (accounts: Account[]): Promise<void> => {
           logger.info(
             `You don't have enough ${tokenNames[tokenToDeposit]} to deposit! trying to swap...`
           );
-          const beraAmount: number =
-            Number(
-              (Number(await wallet.getBalance()) / 10 ** 18)
-                .toString()
-                .slice(0, 10)
-            ) * 0.95;
+          const beraAmount: number = await wallet.getFormattedEtherBalance();
 
-          // await bex.swapByApi(BERA, tokenToDeposit, beraAmount * rint(0.1, 0.5));
-          await bex.swapByApi(BERA, tokenToDeposit, 0.1);
+          await bex.swapByApi(
+            BERA,
+            tokenToDeposit,
+            beraAmount * rint(0.1, 0.5)
+          );
         }
       } catch (error) {
         logger.error(error);

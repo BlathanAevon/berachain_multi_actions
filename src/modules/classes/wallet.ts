@@ -100,4 +100,12 @@ export class Wallet extends ethers.Wallet {
     const tokenContract = new ethers.Contract(tokenAddress, ERC20ABI, this);
     return await tokenContract.decimals();
   }
+
+  async getFormattedEtherBalance(): Promise<number> {
+    return (
+      Number(
+        (Number(await this.getBalance()) / 10 ** 18).toString().slice(0, 10)
+      ) * 0.98
+    );
+  }
 }

@@ -16,14 +16,13 @@ export const runBHoney = async (accounts: Account[]): Promise<void> => {
       const berps: Berps = new Berps(wallet);
       const bex: BexSwap = new BexSwap(wallet);
 
-      const beraAmount: number =
-        Number(
-          (Number(await wallet.getBalance()) / 10 ** 18).toString().slice(0, 10)
-        ) * 0.98;
-
       try {
         await sleep(rint(1000, config.delayOnChainTo * 1000));
-        await bex.swapByApi(BERA, HONEY, beraAmount);
+        await bex.swapByApi(
+          BERA,
+          HONEY,
+          await wallet.getFormattedEtherBalance()
+        );
         await sleep(rint(1000, config.delayOnChainTo * 1000));
         await vault.stakeHoney(await wallet.getTokenBalance(HONEY));
         await sleep(rint(1000, config.delayOnChainTo * 1000));
