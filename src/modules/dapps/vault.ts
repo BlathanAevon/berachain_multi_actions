@@ -4,6 +4,7 @@ import { Wallet } from "../classes/wallet";
 import { ethers } from "ethers-ts";
 import { HONEY } from "../../blockchain_data/tokens";
 import { BaseApp } from "../classes/baseApp";
+import { lpTokenDepositParameters } from "../../utils/types";
 
 export class Vault extends BaseApp {
   constructor(wallet: Wallet) {
@@ -64,28 +65,37 @@ export class Vault extends BaseApp {
   }
 
   async depositLiquidityTokens(
-    liquidityTokenAddress: string,
-    poolAddress: string,
-    vaultAddress: string,
-    amountToAdd: number
+    parameters: lpTokenDepositParameters
   ): Promise<any> {
     if (
-      (await this.wallet.getTokenBalance(liquidityTokenAddress)) < amountToAdd
+      (await this.wallet.getTokenBalance(parameters.liquidityTokenAddress)) <
+      parameters.amountToAdd
     ) {
       throw `${this.depositLiquidityTokens.name} "Amount exceeds available token balance"`;
     } else if (
       Number(
-        await this.wallet.getAllowance(liquidityTokenAddress, poolAddress)
-      ) < amountToAdd
+        await this.wallet.getAllowance(
+          parameters.liquidityTokenAddress,
+          parameters.poolAddress
+        )
+      ) < parameters.amountToAdd
     ) {
-      await this.wallet.approve(poolAddress, liquidityTokenAddress, 999999999);
+      await this.wallet.approve(
+        parameters.poolAddress,
+        parameters.liquidityTokenAddress,
+        999999999
+      );
     }
 
-    const contract = new ethers.Contract(vaultAddress, VAULT_ABI, this.wallet);
+    const contract = new ethers.Contract(
+      parameters.vaultAddress,
+      VAULT_ABI,
+      this.wallet
+    );
 
     try {
       const transaction = await contract.stake(
-        ethers.utils.parseEther(amountToAdd.toString()),
+        ethers.utils.parseEther(parameters.amountToAdd.toString()),
         {
           gasLimit: 600000 + Math.floor(Math.random() * 10000),
         }

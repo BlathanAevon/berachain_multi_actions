@@ -1,4 +1,4 @@
-import { ethers, utils } from "ethers-ts";
+import { ethers } from "ethers-ts";
 import { BERA, WBERA } from "../../blockchain_data/tokens";
 import {
   DEXABI,
@@ -141,9 +141,7 @@ export class BexSwap extends BaseApp {
     }
   }
 
-  async addLiquidity(
-    addLiquidityParameters: AddLiquidityParameters
-  ): Promise<any> {
+  async addLiquidity(parameters: AddLiquidityParameters): Promise<any> {
     const contract = new ethers.Contract(
       APPROVE_LIQUIDITY,
       LIQUIDITY_ABI,
@@ -151,17 +149,25 @@ export class BexSwap extends BaseApp {
     );
 
     const abiCoder = ethers.utils.defaultAbiCoder;
-    const firstTokenAddress = addLiquidityParameters.firstTokenAddress;
-    const secondTokenAddress = addLiquidityParameters.secondTokenAddress;
+    const firstTokenAddress = parameters.firstTokenAddress;
+    const secondTokenAddress = parameters.secondTokenAddress;
+    let modeCode;
 
     if (firstTokenAddress !== BERA) {
       const firstTokenToAddBalance = await this.wallet.getTokenBalance(
         firstTokenAddress
       );
 
+      if (firstTokenToAddBalance < parameters.amountToAdd) {
+        throw new Error(
+          `Balance of the first token is not enough to add. BALANCE: ${firstTokenToAddBalance}`
+        );
+      }
+
       if (
-        Number(await this.wallet.getAllowance(firstTokenAddress, DEXADDRESS)) <
-        addLiquidityParameters.amountToAdd
+        Number(
+          await this.wallet.getAllowance(firstTokenAddress, LIQUIDITY_ROUTER)
+        ) < parameters.amountToAdd
       ) {
         await this.wallet.approve(
           LIQUIDITY_ROUTER,
@@ -169,20 +175,22 @@ export class BexSwap extends BaseApp {
           999999999
         );
       }
-
-      if (firstTokenToAddBalance < addLiquidityParameters.amountToAdd) {
-        throw new Error(
-          `Balance of the first token is not enough to add. BALANCE: ${firstTokenToAddBalance}`
-        );
-      }
-    } else if (secondTokenAddress !== BERA) {
+    }
+    if (secondTokenAddress !== BERA) {
       const secondTokenToAddBalance = await this.wallet.getTokenBalance(
         secondTokenAddress
       );
 
+      if (secondTokenToAddBalance < parameters.amountToAdd) {
+        throw new Error(
+          `Balance of the second token is not enough to add liquidity. BALANCE: ${secondTokenToAddBalance}`
+        );
+      }
+
       if (
-        Number(await this.wallet.getAllowance(secondTokenAddress, DEXADDRESS)) <
-        addLiquidityParameters.amountToAdd
+        Number(
+          await this.wallet.getAllowance(secondTokenAddress, LIQUIDITY_ROUTER)
+        ) < parameters.amountToAdd
       ) {
         await this.wallet.approve(
           LIQUIDITY_ROUTER,
@@ -190,13 +198,9 @@ export class BexSwap extends BaseApp {
           999999999
         );
       }
+    }
 
-      if (secondTokenToAddBalance < addLiquidityParameters.amountToAdd) {
-        throw new Error(
-          `Balance of the second token is not enough to add. BALANCE: ${secondTokenToAddBalance}`
-        );
-      }
-    } else if (firstTokenAddress == BERA || secondTokenAddress == BERA) {
+    if (firstTokenAddress == BERA || secondTokenAddress == BERA) {
       const beraBalance: number =
         Number(
           (Number(await this.wallet.getBalance()) / 10 ** 18)
@@ -204,9 +208,9 @@ export class BexSwap extends BaseApp {
             .slice(0, 10)
         ) * 0.98;
 
-      if (beraBalance < addLiquidityParameters.amountToAdd) {
+      if (beraBalance < parameters.amountToAdd) {
         throw new Error(
-          `Balance of the BERA is not enough to add. BALANCE: ${beraBalance}`
+          `Balance of the BERA is not enough to add liquidity. BALANCE: ${beraBalance}`
         );
       }
     }
@@ -225,6 +229,12 @@ export class BexSwap extends BaseApp {
     // settleFlags,   // uint8
     // lpConduit      // address
 
+    if (secondTokenAddress == BERA) {
+      modeCode = 32;
+    } else {
+      modeCode = 31;
+    }
+
     const poolCmdData = abiCoder.encode(
       [
         "uint8",
@@ -239,18 +249,23 @@ export class BexSwap extends BaseApp {
         "uint8",
         "address",
       ],
+
+      // modeCodes
+      //31 - Fixed in base tokens
+      //32 - Fixed in quote tokens
+
       [
-        32,
-        addLiquidityParameters.firstTokenAddress,
-        addLiquidityParameters.secondTokenAddress,
+        modeCode,
+        parameters.firstTokenAddress,
+        parameters.secondTokenAddress,
         36000,
         0,
         0,
-        ethers.utils.parseEther(addLiquidityParameters.amountToAdd.toString()),
+        ethers.utils.parseEther(parameters.amountToAdd.toString()),
         (1).toString(),
         BigInt(100000000000000000000000000000).toString(),
         0,
-        addLiquidityParameters.poolAddress,
+        parameters.poolAddress,
       ]
     );
 
@@ -258,8 +273,8 @@ export class BexSwap extends BaseApp {
       const transaction: any = await contract.userCmd(128, poolCmdData, {
         gasLimit: 2000000,
         value:
-          addLiquidityParameters.secondTokenAddress == BERA
-            ? ethers.utils.parseEther("0.01")
+          parameters.secondTokenAddress == BERA
+            ? ethers.utils.parseEther(parameters.amountToAdd.toString())
             : 0,
       });
 

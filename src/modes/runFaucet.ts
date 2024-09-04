@@ -7,9 +7,10 @@ import logger from "../utils/logger";
 export const runFaucet = async (accounts: Account[]): Promise<void> => {
   await Promise.all(
     accounts.map(async (account) => {
+      await sleep(rint(1000, config.delayFaucet * 1000));
+
       try {
         const token = await Faucet.solveCaptcha();
-        await sleep(rint(500, config.delayFaucet * 1000));
         await Faucet.dripTokens(account, token);
 
         logger.info(`Success! Wallet: ${account.wallet}`);

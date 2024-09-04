@@ -36,3 +36,10 @@ export type AddLiquidityParameters = {
   amountToAdd: number;
   poolAddress: string;
 };
+
+export type lpTokenDepositParameters = {
+  liquidityTokenAddress: string;
+  poolAddress: string;
+  vaultAddress: string;
+  amountToAdd: number;
+};

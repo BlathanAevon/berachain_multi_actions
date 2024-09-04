@@ -4,7 +4,6 @@ import logger from "./utils/logger";
 import inquirer from "inquirer";
 import { runDeploy } from "./modes/runDeploy";
 import { runFaucet } from "./modes/runFaucet";
-import config from "./config";
 import { runBalances } from "./modes/runBalances";
 import { runBHoney } from "./modes/runBHoney";
 import { choices } from "./utils/choices";
@@ -13,6 +12,7 @@ import { runVDHoney } from "./modes/runVDHoney";
 import { runDelegate } from "./modes/runDelegate";
 import { runActivateBoost } from "./modes/runActivateBoost";
 import { runLiquidityFarm } from "./modes/runLiquidityFarm";
+import config from "./config";
 
 const main = async () => {
   let accounts: Account[];
