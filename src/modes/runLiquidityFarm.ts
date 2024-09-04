@@ -37,7 +37,7 @@ export const runLiquidityFarm = async (accounts: Account[]): Promise<void> => {
       await bex.swapByApi(BERA, HONEY, beraBalance * rint(0.1, 0.5));
       await bex.swapByApi(BERA, STGUSDC, beraBalance * rint(0.1, 0.5));
 
-      const pairs = ["honeyWbera", "honeyUsdc", "honeyWbtc"];
+      const pairs = ["honeyWbera", "honeyUsdc"];
       const pairChoice = randomChoice(pairs);
 
       const addLiquidityParameters = {
