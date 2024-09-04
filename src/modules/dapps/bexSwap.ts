@@ -1,10 +1,20 @@
-import { ethers } from "ethers-ts";
+import { ethers, utils } from "ethers-ts";
 import { BERA, WBERA } from "../../blockchain_data/tokens";
-import { DEXABI, WBERA_CONTRACT_ABI } from "../../blockchain_data/abi";
-import { DEXADDRESS, WBERA_CONTRACT } from "../../blockchain_data/contracts";
+import {
+  DEXABI,
+  LIQUIDITY_ABI,
+  WBERA_CONTRACT_ABI,
+} from "../../blockchain_data/abi";
+import {
+  APPROVE_LIQUIDITY,
+  DEXADDRESS,
+  LIQUIDITY_ROUTER,
+  WBERA_CONTRACT,
+} from "../../blockchain_data/contracts";
 import { Wallet } from "../classes/wallet";
 import { BaseApp } from "../classes/baseApp";
 import { getSwapPath } from "../../utils/utils";
+import { AddLiquidityParameters } from "../../utils/types";
 
 export class BexSwap extends BaseApp {
   constructor(wallet: Wallet) {
@@ -128,6 +138,134 @@ export class BexSwap extends BaseApp {
       } catch (error) {
         throw error;
       }
+    }
+  }
+
+  async addLiquidity(
+    addLiquidityParameters: AddLiquidityParameters
+  ): Promise<any> {
+    const contract = new ethers.Contract(
+      APPROVE_LIQUIDITY,
+      LIQUIDITY_ABI,
+      this.wallet
+    );
+
+    const abiCoder = ethers.utils.defaultAbiCoder;
+    const firstTokenAddress = addLiquidityParameters.firstTokenAddress;
+    const secondTokenAddress = addLiquidityParameters.secondTokenAddress;
+
+    if (firstTokenAddress !== BERA) {
+      const firstTokenToAddBalance = await this.wallet.getTokenBalance(
+        firstTokenAddress
+      );
+
+      if (
+        Number(await this.wallet.getAllowance(firstTokenAddress, DEXADDRESS)) <
+        addLiquidityParameters.amountToAdd
+      ) {
+        await this.wallet.approve(
+          LIQUIDITY_ROUTER,
+          firstTokenAddress,
+          999999999
+        );
+      }
+
+      if (firstTokenToAddBalance < addLiquidityParameters.amountToAdd) {
+        throw new Error(
+          `Balance of the first token is not enough to add. BALANCE: ${firstTokenToAddBalance}`
+        );
+      }
+    } else if (secondTokenAddress !== BERA) {
+      const secondTokenToAddBalance = await this.wallet.getTokenBalance(
+        secondTokenAddress
+      );
+
+      if (
+        Number(await this.wallet.getAllowance(secondTokenAddress, DEXADDRESS)) <
+        addLiquidityParameters.amountToAdd
+      ) {
+        await this.wallet.approve(
+          LIQUIDITY_ROUTER,
+          secondTokenAddress,
+          999999999
+        );
+      }
+
+      if (secondTokenToAddBalance < addLiquidityParameters.amountToAdd) {
+        throw new Error(
+          `Balance of the second token is not enough to add. BALANCE: ${secondTokenToAddBalance}`
+        );
+      }
+    } else if (firstTokenAddress == BERA || secondTokenAddress == BERA) {
+      const beraBalance: number =
+        Number(
+          (Number(await this.wallet.getBalance()) / 10 ** 18)
+            .toString()
+            .slice(0, 10)
+        ) * 0.98;
+
+      if (beraBalance < addLiquidityParameters.amountToAdd) {
+        throw new Error(
+          `Balance of the BERA is not enough to add. BALANCE: ${beraBalance}`
+        );
+      }
+    }
+
+    // If you don't understand values below, please refer here: https://docs.ambient.finance/developers/dex-contract-interface/flat-lp-calls
+
+    // code,          // uint8
+    // base,          // address
+    // quote,         // address
+    // poolIdx,       // uint256
+    // bidTick,       // int24
+    // askTick,       // int24
+    // qty,           // uint128
+    // limitLower,    // uint128
+    // limitHigher,   // uint128
+    // settleFlags,   // uint8
+    // lpConduit      // address
+
+    const poolCmdData = abiCoder.encode(
+      [
+        "uint8",
+        "address",
+        "address",
+        "uint256",
+        "int24",
+        "int24",
+        "uint128",
+        "uint128",
+        "uint128",
+        "uint8",
+        "address",
+      ],
+      [
+        32,
+        addLiquidityParameters.firstTokenAddress,
+        addLiquidityParameters.secondTokenAddress,
+        36000,
+        0,
+        0,
+        ethers.utils.parseEther(addLiquidityParameters.amountToAdd.toString()),
+        (1).toString(),
+        BigInt(100000000000000000000000000000).toString(),
+        0,
+        addLiquidityParameters.poolAddress,
+      ]
+    );
+
+    try {
+      const transaction: any = await contract.userCmd(128, poolCmdData, {
+        gasLimit: 2000000,
+        value:
+          addLiquidityParameters.secondTokenAddress == BERA
+            ? ethers.utils.parseEther("0.01")
+            : 0,
+      });
+
+      await this.wallet.waitForTx("Add liquidity", transaction);
+    } catch (error) {
+      throw error;
     }
   }
 }

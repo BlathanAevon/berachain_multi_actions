@@ -24,6 +24,10 @@ export const choices = [
     value: "delegate",
   },
   {
+    name: "Farm BGT with Liqudity",
+    value: "liquidityFarm",
+  },
+  {
     name: "Activate Boost (after delegating)",
     value: "boost",
   },

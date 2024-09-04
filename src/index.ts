@@ -12,6 +12,7 @@ import { runGetBgtRewards } from "./modes/runGetBgtReward";
 import { runVDHoney } from "./modes/runVDHoney";
 import { runDelegate } from "./modes/runDelegate";
 import { runActivateBoost } from "./modes/runActivateBoost";
+import { runLiquidityFarm } from "./modes/runLiquidityFarm";
 
 const main = async () => {
   let accounts: Account[];
@@ -47,6 +48,9 @@ const main = async () => {
         break;
       case "vdhoney":
         await runVDHoney(accounts);
+        break;
+      case "liquidityFarm":
+        await runLiquidityFarm(accounts);
         break;
       case "bgt":
         await runGetBgtRewards(accounts);

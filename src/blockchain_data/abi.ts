@@ -2448,6 +2448,19 @@ export const VAULT_ABI = [
     stateMutability: "view",
   },
   {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "stake",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     type: "function",
     name: "accPnlPerToken",
     inputs: [],
@@ -4659,5 +4672,32 @@ export const BERPS_ABI = [
     ],
     outputs: [],
     stateMutability: "nonpayable",
+  },
+];
+
+export const LIQUIDITY_ABI = [
+  {
+    inputs: [
+      {
+        internalType: "uint16",
+        name: "callpath",
+        type: "uint16",
+      },
+      {
+        internalType: "bytes",
+        name: "cmd",
+        type: "bytes",
+      },
+    ],
+    name: "userCmd",
+    outputs: [
+      {
+        internalType: "bytes",
+        name: "",
+        type: "bytes",
+      },
+    ],
+    stateMutability: "payable",
+    type: "function",
   },
 ];

@@ -62,4 +62,40 @@ export class Vault extends BaseApp {
       throw new Error(`Error when trying to withdraw bHONEY ${error}`);
     }
   }
+
+  async depositLiquidityTokens(
+    liquidityTokenAddress: string,
+    poolAddress: string,
+    vaultAddress: string,
+    amountToAdd: number
+  ): Promise<any> {
+    if (
+      (await this.wallet.getTokenBalance(liquidityTokenAddress)) < amountToAdd
+    ) {
+      throw `${this.depositLiquidityTokens.name} "Amount exceeds available token balance"`;
+    } else if (
+      Number(
+        await this.wallet.getAllowance(liquidityTokenAddress, poolAddress)
+      ) < amountToAdd
+    ) {
+      await this.wallet.approve(poolAddress, liquidityTokenAddress, 999999999);
+    }
+
+    const contract = new ethers.Contract(vaultAddress, VAULT_ABI, this.wallet);
+
+    try {
+      const transaction = await contract.stake(
+        ethers.utils.parseEther(amountToAdd.toString()),
+        {
+          gasLimit: 600000 + Math.floor(Math.random() * 10000),
+        }
+      );
+
+      await this.wallet.waitForTx("Deposit LP tokens", transaction);
+
+      return;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

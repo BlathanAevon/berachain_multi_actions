@@ -1,0 +1,2 @@
+export const HONEY_WBERA_LP_TOKEN =
+  "0xd28d852cbcc68DCEC922f6d5C7a8185dBaa104B7";
