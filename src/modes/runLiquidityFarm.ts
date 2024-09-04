@@ -34,21 +34,21 @@ export const runLiquidityFarm = async (accounts: Account[]): Promise<void> => {
       const pairs = ["honeyWbera", "honeyUsdc"];
       const pairChoice = randomChoice(pairs);
 
-      // try {
-      //   switch (pairChoice) {
-      //     case "honeyWbera":
-      //       await bex.swapByApi(BERA, HONEY, beraBalance * rint(0.1, 0.5));
-      //       break;
-      //     case "honeyUsdc":
-      //       await bex.swapByApi(BERA, STGUSDC, beraBalance * rint(0.1, 0.5));
-      //       break;
-      //     default:
-      //       break;
-      //   }
-      // } catch (error) {
-      //   logger.error(error);
-      //   return;
-      // }
+      try {
+        switch (pairChoice) {
+          case "honeyWbera":
+            await bex.swapByApi(BERA, HONEY, beraBalance * rint(0.1, 0.5));
+            break;
+          case "honeyUsdc":
+            await bex.swapByApi(BERA, STGUSDC, beraBalance * rint(0.1, 0.5));
+            break;
+          default:
+            break;
+        }
+      } catch (error) {
+        logger.error(error);
+        return;
+      }
 
       const addLiquidityParameters = {
         honeyWbera: {
