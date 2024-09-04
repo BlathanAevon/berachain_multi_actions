@@ -3,11 +3,10 @@ import {
   AddLiquidityParameters,
   lpTokenDepositParameters,
 } from "../utils/types";
-import { BERA, BHONEY, HONEY, STGUSDC } from "../blockchain_data/tokens";
+import { BERA, HONEY, STGUSDC } from "../blockchain_data/tokens";
 import { Wallet } from "../modules/classes/wallet";
-import { rint, sleep } from "../utils/utils";
+import { randomChoice, rint, sleep } from "../utils/utils";
 import { BexSwap } from "../modules/dapps/bexSwap";
-import { Berps } from "../modules/dapps/berps";
 import { Vault } from "../modules/dapps/vault";
 import config from "../config";
 import logger from "../utils/logger";
@@ -28,23 +27,24 @@ export const runLiquidityFarm = async (accounts: Account[]): Promise<void> => {
       const vault: Vault = new Vault(wallet);
       const bex: BexSwap = new BexSwap(wallet);
 
+      await sleep(rint(1000, config.delayOnChainTo * 1000));
+
       const beraBalance: number =
         Number(
           (Number(await wallet.getBalance()) / 10 ** 18).toString().slice(0, 10)
         ) * 0.98;
 
-      //   await bex.swapByApi(BERA, HONEY, beraBalance * rint(0.1, 0.5));
-      //   await bex.swapByApi(BERA, STGUSDC, beraBalance * rint(0.1, 0.5));
+      await bex.swapByApi(BERA, HONEY, beraBalance * rint(0.1, 0.5));
+      await bex.swapByApi(BERA, STGUSDC, beraBalance * rint(0.1, 0.5));
 
-      const pairs = ["honeyWbera", "honeyUsdc"];
-      const pairChoice = pairs[Math.floor(Math.random() * pairs.length)];
+      const pairs = ["honeyWbera", "honeyUsdc", "honeyWbtc"];
+      const pairChoice = randomChoice(pairs);
 
       const addLiquidityParameters = {
         honeyWbera: {
           firstTokenAddress: HONEY,
           secondTokenAddress: BERA,
-          //   amountToAdd: beraBalance * rint(0.2, 0.5),
-          amountToAdd: 0.1,
+          amountToAdd: beraBalance * rint(0.2, 0.5),
           poolAddress: HONEY_WBERA,
         },
         honeyUsdc: {

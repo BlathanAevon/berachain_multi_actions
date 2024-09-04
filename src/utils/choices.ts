@@ -4,6 +4,10 @@ export const choices = [
     value: "faucet",
   },
   {
+    name: "Get balances",
+    value: "balance",
+  },
+  {
     name: "bHoney",
     value: "bhoney",
   },
@@ -12,20 +16,16 @@ export const choices = [
     value: "vdhoney",
   },
   {
+    name: "Farm BGT with Liqudity",
+    value: "liquidityFarm",
+  },
+  {
     name: "Claim BGT",
     value: "bgt",
   },
   {
-    name: "Get balances",
-    value: "balance",
-  },
-  {
     name: "Delegate BGT to Validator",
     value: "delegate",
-  },
-  {
-    name: "Farm BGT with Liqudity",
-    value: "liquidityFarm",
   },
   {
     name: "Activate Boost (after delegating)",

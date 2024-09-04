@@ -5,6 +5,7 @@
 
 > [!WARNING]
 > The program is in the development stage as well as Bartio testnet, the modules can crash or work incorrectly, each module can require manual adjustment.
+> Please, feel free to contact a developer anytime for any wishes or additions you would wan't to see in this program!
 
 <p align="center">
 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSStlHMF7kT65jwVfXt9PwzRG23NOZXESt70Q&s" width="300" height="100" border="1"/>
@@ -14,6 +15,9 @@ This README provides step-by-step instructions for installing the program and co
 
 > [!NOTE]
 > The program requires the latest nodejs version, you can install it from [here](https://nodejs.org/en)
+
+> [!NOTE]
+> If your delays does not work, set a bigger value, 100-200 is optimal 
 
 ## Installation
 

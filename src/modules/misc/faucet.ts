@@ -71,7 +71,7 @@ export class Faucet {
         throw new Error(
           `Wallet: ${account.wallet.slice(0, 4)}...${account.wallet.slice(
             -4
-          )} ${error.response.data.msg}`
+          )} ${error}`
         );
       }
       throw new Error(

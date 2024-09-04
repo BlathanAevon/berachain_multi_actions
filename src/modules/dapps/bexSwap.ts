@@ -1,5 +1,5 @@
 import { ethers } from "ethers-ts";
-import { BERA, WBERA } from "../../blockchain_data/tokens";
+import { BERA, WBERA, WBTC } from "../../blockchain_data/tokens";
 import {
   DEXABI,
   LIQUIDITY_ABI,
@@ -115,7 +115,7 @@ export class BexSwap extends BaseApp {
       } else {
         swapsArray = [
           {
-            poolIdx: "36000",
+            poolIdx: tokenTo == WBTC ? "36001" : "36000",
             base: tokenTo.toString(),
             quote: "0x0000000000000000000000000000000000000000",
             isBuy: false,

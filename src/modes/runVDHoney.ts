@@ -13,6 +13,7 @@ import config from "../config";
 import { Bend } from "../modules/dapps/bend";
 import logger from "../utils/logger";
 import { BexSwap } from "../modules/dapps/bexSwap";
+import tokenNames from "../blockchain_data/tokenNames";
 
 export const runVDHoney = async (accounts: Account[]): Promise<void> => {
   await Promise.all(
@@ -21,12 +22,14 @@ export const runVDHoney = async (accounts: Account[]): Promise<void> => {
       const bend = new Bend(wallet);
       const bex = new BexSwap(wallet);
 
+      await sleep(rint(1000, config.delayOnChainTo * 1000));
+
       const tokenToDeposit = randomChoice([WBTC, WETH]);
 
       try {
         if ((await wallet.getTokenBalance(tokenToDeposit)) < 0.000001) {
           logger.info(
-            `You don't have enough ${tokenToDeposit} to deposit! trying to swap...`
+            `You don't have enough ${tokenNames[tokenToDeposit]} to deposit! trying to swap...`
           );
           const beraAmount: number =
             Number(
@@ -35,18 +38,21 @@ export const runVDHoney = async (accounts: Account[]): Promise<void> => {
                 .slice(0, 10)
             ) * 0.95;
 
-          await sleep(rint(1000, config.delayOnChainTo * 1000));
-          await bex.swapByApi(BERA, tokenToDeposit, beraAmount);
+          // await bex.swapByApi(BERA, tokenToDeposit, beraAmount * rint(0.1, 0.5));
+          await bex.swapByApi(BERA, tokenToDeposit, 0.1);
         }
+      } catch (error) {
+        logger.error(error);
+        return;
+      }
 
-        await sleep(rint(1000, config.delayOnChainTo * 1000));
-
+      try {
+        logger.info(`Trying to deposit ${tokenNames[tokenToDeposit]}...`);
         await bend.deposit(
           tokenToDeposit,
           await wallet.getTokenBalance(tokenToDeposit)
         );
 
-        await sleep(rint(1000, config.delayOnChainTo * 1000));
         await bend.borrow(0.1);
       } catch (error) {
         logger.error(error);
