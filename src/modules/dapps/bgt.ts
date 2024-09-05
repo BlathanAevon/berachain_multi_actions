@@ -1,4 +1,4 @@
-import { ethers } from "ethers-ts";
+import { BigNumber, ethers } from "ethers-ts";
 import { BGT_REWARD_ABI, ERC20ABI } from "../../blockchain_data/abi";
 import { BEND_BGT_REWARD, BERPS, BEX } from "../../blockchain_data/contracts";
 import { BGTT, HONEY } from "../../blockchain_data/tokens";
@@ -123,11 +123,10 @@ export class BGT extends BaseApp {
     }
   }
 
-  async delegateBGT(amountToDelegate: number): Promise<any> {
-    const balance = await this.wallet.getTokenBalance(BGTT);
-    const validator = "0x40495A781095932e2FC8dccA69F5e358711Fdd41";
+  async delegateBGT(amountToDelegate: number, validator: string): Promise<any> {
+    const balance: number = await this.wallet.getTokenBalance(BGTT);
 
-    const delegateContract = new ethers.Contract(
+    const delegateContract: ethers.Contract = new ethers.Contract(
       BGTT,
       BGT_REWARD_ABI,
       this.wallet
@@ -140,19 +139,18 @@ export class BGT extends BaseApp {
     }
 
     try {
-      const amount = ethers.utils.parseUnits(
+      const amount: BigNumber = ethers.utils.parseUnits(
         amountToDelegate.toString(),
         await this.wallet.getTokenDecimals(BGTT)
       );
-      const transaction = await delegateContract.queueBoost(
-        validator, // HoneyJar validator
-        amount,
-        {
-          gasLimit: 600000 + Math.floor(Math.random() * 10000),
-        }
-      );
+      const transaction = await delegateContract.queueBoost(validator, amount, {
+        gasLimit: 600000 + Math.floor(Math.random() * 10000),
+      });
 
-      await this.wallet.waitForTx("Delegate BGT to Validator", transaction);
+      await this.wallet.waitForTx(
+        `Delegating ${amountToDelegate} BGT to Validator`,
+        transaction
+      );
 
       return;
     } catch (error) {
@@ -160,9 +158,8 @@ export class BGT extends BaseApp {
     }
   }
 
-  async activateBoost(): Promise<any> {
+  async activateBoost(validator): Promise<any> {
     const balance = await this.wallet.getTokenBalance(BGTT);
-    const validator = "0x40495A781095932e2FC8dccA69F5e358711Fdd41"; //HoneJar Validator
 
     const conract = new ethers.Contract(BGTT, BGT_REWARD_ABI, this.wallet);
 

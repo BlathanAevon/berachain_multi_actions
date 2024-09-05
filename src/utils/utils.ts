@@ -1,8 +1,14 @@
 import { readFileSync } from "fs";
 import { BigNumber, ethers } from "ethers";
-import { Proxy, Account } from "./types";
+import { Proxy, Account, delegationState, Delegation } from "./types";
 const randomUseragent = require("random-useragent");
 import axios from "axios";
+import path from "path";
+import fs from "fs";
+
+const delegationFilePath = path.join(__dirname, "../data/delegationState.json");
+const walletsFilePath = path.join(__dirname, "../wallets.txt");
+const proxiesFilePath = path.join(__dirname, "../proxies.txt");
 
 export function rint(from: number, to: number): number {
   if (from > to) {
@@ -68,8 +74,8 @@ export async function createAccounts(
   shuffle: boolean
 ): Promise<Account[] | any> {
   try {
-    const walletsData = getDataFromFile(__dirname + "/../data/wallets.txt");
-    const proxiesData = getDataFromFile(__dirname + "/../data/proxies.txt");
+    const walletsData = getDataFromFile(walletsFilePath);
+    const proxiesData = getDataFromFile(proxiesFilePath);
 
     if (walletsData.length != proxiesData.length) {
       throw new Error(
@@ -141,4 +147,58 @@ export async function getSwapPath(
   );
 
   return response;
+}
+
+export function cleanDelegationState() {
+  try {
+    const delegationStateData = fs.readFileSync(delegationFilePath, "utf-8");
+
+    let delegationState: delegationState = JSON.parse(delegationStateData);
+
+    delegationState.delegations = [];
+
+    fs.writeFile(
+      delegationFilePath,
+      JSON.stringify(delegationState, null, 2),
+      function (err) {
+        if (err) throw err;
+      }
+    );
+  } catch (error) {
+    throw new Error("Could now clean the delegation state file");
+  }
+}
+
+export function changeDelegationState(delegations: Delegation[]) {
+  try {
+    cleanDelegationState();
+
+    const delegationStateData = fs.readFileSync(delegationFilePath, "utf-8");
+
+    let delegationState: delegationState = JSON.parse(delegationStateData);
+
+    delegationState.delegations = delegations;
+
+    fs.writeFile(
+      delegationFilePath,
+      JSON.stringify(delegationState, null, 2),
+      function (err) {
+        if (err) throw err;
+      }
+    );
+  } catch (error) {
+    throw error;
+  }
+}
+
+export function readDelegationState(): Delegation[] {
+  try {
+    const delegationStateData = fs.readFileSync(delegationFilePath, "utf-8");
+
+    let delegationState: delegationState = JSON.parse(delegationStateData);
+
+    return delegationState.delegations;
+  } catch (error) {
+    throw error;
+  }
 }

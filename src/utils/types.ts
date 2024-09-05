@@ -43,3 +43,12 @@ export type lpTokenDepositParameters = {
   vaultAddress: string;
   amountToAdd: number;
 };
+
+export type delegationState = {
+  delegations: Delegation[];
+};
+
+export type Delegation = {
+  wallet: string;
+  delegatedTo: string;
+};

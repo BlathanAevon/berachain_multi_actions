@@ -130,5 +130,5 @@ dist
 .pnp.*
 
 
-src/data/wallets.txt
-src/data/proxies.txt
+src/wallets.txt
+src/proxies.txt
