@@ -22,7 +22,7 @@ export const runActivateBoost = async (accounts: Account[]): Promise<void> => {
       try {
         await bgt.activateBoost(validator);
       } catch (error) {
-        logger.error(`Error activating boost for ${wallet.address}: ${error}`);
+        throw error;
       }
     })
   );

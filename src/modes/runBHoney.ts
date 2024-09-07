@@ -21,7 +21,7 @@ export const runBHoney = async (accounts: Account[]): Promise<void> => {
         await bex.swapByApi(
           BERA,
           HONEY,
-          await wallet.getFormattedEtherBalance()
+          (await wallet.getFormattedEtherBalance()) * rint(0.5, 0.9)
         );
         await sleep(rint(1000, config.delayOnChainTo * 1000));
         await vault.stakeHoney(await wallet.getTokenBalance(HONEY));

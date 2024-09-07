@@ -34,7 +34,7 @@ export const runDelegate = async (accounts: Account[]): Promise<void> => {
       });
 
       try {
-        await bgt.delegateBGT(bgtBalance * rint(0.2, 0.9), randomValidator);
+        await bgt.delegateBGT(bgtBalance * 0.99, randomValidator);
       } catch (error) {
         logger.error(error);
         return;

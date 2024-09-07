@@ -60,24 +60,22 @@ export class Faucet {
 
       return;
     } catch (error) {
+      const shortWallet = `${account.wallet.slice(
+        0,
+        4
+      )}...${account.wallet.slice(-4)}`;
       if (error.response) {
         if (error.response.status == 402) {
+          throw new Error(`Wallet: ${shortWallet} You don't have 0.001 ETH.`);
+        } else if (error.response.status == 429) {
           throw new Error(
-            `Wallet: ${account.wallet.slice(0, 4)}...${account.wallet.slice(
-              -4
-            )} You don't have 0.001 ETH.`
+            `Wallet: ${shortWallet} Is in cooldown, try again later`
           );
         }
-        throw new Error(
-          `Wallet: ${account.wallet.slice(0, 4)}...${account.wallet.slice(
-            -4
-          )} ${error}`
-        );
+        throw new Error(`Wallet: ${shortWallet} ${error}`);
       }
       throw new Error(
-        `Wallet: ${account.wallet.slice(0, 4)}...${account.wallet.slice(
-          -4
-        )} Could not make a response ${error}`
+        `Wallet: ${shortWallet} Could not make a response ${error}`
       );
     }
   }

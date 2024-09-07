@@ -1,44 +1,44 @@
 {
   "delegations": [
     {
-      "wallet": "0xe6FBe1f6022138bd45Aa87d0CC1895ff54217d53",
-      "delegatedTo": "0x35c1e9C7803b47aF738f37Beada3C7c35Eed73d4"
-    },
-    {
-      "wallet": "0x3ec14337eB1729fBb759AF01106B67E0eeE41b18",
-      "delegatedTo": "0x35c1e9C7803b47aF738f37Beada3C7c35Eed73d4"
-    },
-    {
-      "wallet": "0xeA3fd45dbE5122937E7545251636755475C4611C",
-      "delegatedTo": "0x0eCBe62654622e14ae882B8c8c65C3f3F54eCcf9"
-    },
-    {
-      "wallet": "0x433b3C3762D9dc14Ae81Ed1f0c844E067D4F56DC",
-      "delegatedTo": "0x40495A781095932e2FC8dccA69F5e358711Fdd41"
-    },
-    {
       "wallet": "0xa41A71ab1370304F27ae4291a5087C7bBD80d1B7",
-      "delegatedTo": "0x0eCBe62654622e14ae882B8c8c65C3f3F54eCcf9"
-    },
-    {
-      "wallet": "0x6b68c6449e6857EcB728555dc2461F78f3D75C9E",
-      "delegatedTo": "0x35c1e9C7803b47aF738f37Beada3C7c35Eed73d4"
-    },
-    {
-      "wallet": "0x0191ff68f8c5Eaf0fc96bf4618EA6D115833E4Fe",
-      "delegatedTo": "0x40495A781095932e2FC8dccA69F5e358711Fdd41"
+      "delegatedTo": "0x34D023ACa5A227789B45A62D377b5B18A680BE01"
     },
     {
       "wallet": "0x19b1d4b2Be509C19a98Cf9cF4dd7003A21C44510",
       "delegatedTo": "0x34D023ACa5A227789B45A62D377b5B18A680BE01"
     },
     {
+      "wallet": "0x0191ff68f8c5Eaf0fc96bf4618EA6D115833E4Fe",
+      "delegatedTo": "0x0eCBe62654622e14ae882B8c8c65C3f3F54eCcf9"
+    },
+    {
+      "wallet": "0x433b3C3762D9dc14Ae81Ed1f0c844E067D4F56DC",
+      "delegatedTo": "0x35c1e9C7803b47aF738f37Beada3C7c35Eed73d4"
+    },
+    {
+      "wallet": "0xe6FBe1f6022138bd45Aa87d0CC1895ff54217d53",
+      "delegatedTo": "0x34D023ACa5A227789B45A62D377b5B18A680BE01"
+    },
+    {
       "wallet": "0x1BA40dc07B04EB38e3bcA56d5044a543CBe5CE6a",
-      "delegatedTo": "0xC5b889a28950e7F8c1F279f758d8a0ab1C89cC38"
+      "delegatedTo": "0x0eCBe62654622e14ae882B8c8c65C3f3F54eCcf9"
+    },
+    {
+      "wallet": "0xeA3fd45dbE5122937E7545251636755475C4611C",
+      "delegatedTo": "0x34D023ACa5A227789B45A62D377b5B18A680BE01"
+    },
+    {
+      "wallet": "0x3ec14337eB1729fBb759AF01106B67E0eeE41b18",
+      "delegatedTo": "0x2D764DFeaAc00390c69985631aAA7Cc3fcfaFAfF"
     },
     {
       "wallet": "0xf7c9D555524E99fEB0EaD186612de1CE387Ff0E8",
-      "delegatedTo": "0x40495A781095932e2FC8dccA69F5e358711Fdd41"
+      "delegatedTo": "0x34D023ACa5A227789B45A62D377b5B18A680BE01"
+    },
+    {
+      "wallet": "0x6b68c6449e6857EcB728555dc2461F78f3D75C9E",
+      "delegatedTo": "0x34D023ACa5A227789B45A62D377b5B18A680BE01"
     }
   ]
 }
