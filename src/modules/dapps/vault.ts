@@ -68,10 +68,12 @@ export class Vault extends BaseApp {
   async depositLiquidityTokens(
     parameters: lpTokenDepositParameters
   ): Promise<any> {
-    if (
-      (await this.wallet.getTokenBalance(parameters.liquidityTokenAddress)) <
-      parameters.amountToAdd
-    ) {
+    const lpTokenBalance = await this.wallet.getTokenBalance(
+      parameters.liquidityTokenAddress
+    );
+    if (lpTokenBalance == 0) {
+      throw `${this.depositLiquidityTokens.name} "Your LP token balance is 0"`;
+    } else if (lpTokenBalance < parameters.amountToAdd) {
       throw `${this.depositLiquidityTokens.name} "Amount exceeds available token balance"`;
     }
 

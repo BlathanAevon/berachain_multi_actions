@@ -71,15 +71,13 @@ export const runLiquidityFarm = async (accounts: Account[]): Promise<void> => {
           liquidityTokenAddress: HONEY_WBERA_LP_TOKEN,
           poolAddress: HONEY_WBERA,
           vaultAddress: HONEY_WBERA_VAULT,
-          amountToAdd:
-            (await wallet.getTokenBalance(HONEY_WBERA_LP_TOKEN)) * 0.99,
+          amountToAdd: await wallet.getTokenBalance(HONEY_WBERA_LP_TOKEN),
         },
         honeyUsdc: {
           liquidityTokenAddress: HONEY_USDC_LP_TOKEN,
           poolAddress: HONEY_USDC,
           vaultAddress: HONEY_USDC_VAULT,
-          amountToAdd:
-            (await wallet.getTokenBalance(HONEY_USDC_LP_TOKEN)) * 0.99,
+          amountToAdd: await wallet.getTokenBalance(HONEY_USDC_LP_TOKEN),
         },
       };
 
