@@ -132,3 +132,4 @@ dist
 
 src/wallets.txt
 src/proxies.txt
+src/data/delegationState.json
