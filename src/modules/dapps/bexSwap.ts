@@ -101,9 +101,13 @@ export class BexSwap extends BaseApp {
       swapAmount = ethers.utils.parseEther(amount.toString());
     }
 
-    if (tokenFromBalance < amount || tokenFromBalance == 0) {
+    if (
+      tokenFromBalance < amount ||
+      tokenFromBalance == 0 ||
+      tokenFromBalance < 0.01
+    ) {
       throw new Error(
-        `Balance is not enough to swap. BALANCE: ${tokenFromBalance}`
+        `Balance is not enough or too low for swap. BALANCE: ${tokenFromBalance}`
       );
     }
 
