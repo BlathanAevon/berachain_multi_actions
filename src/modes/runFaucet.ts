@@ -10,10 +10,9 @@ export const runFaucet = async (accounts: Account[]): Promise<void> => {
       await sleep(rint(1000, config.delayFaucet * 1000));
 
       try {
-        const token = await Faucet.solveCaptcha();
-        await Faucet.dripTokens(account, token);
-
+        await Faucet.dripFaucetToWallet(account);
         logger.info(`Success! Wallet: ${account.wallet}`);
+        return;
       } catch (error) {
         logger.error(error);
         return;

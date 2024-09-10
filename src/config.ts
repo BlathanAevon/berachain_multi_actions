@@ -1,5 +1,5 @@
 export default {
-  capsolverKey: "",
+  capsolverKey: "", // Your https://dashboard.capsolver.com key
   delayOnChainTo: 30, // (seconds) Delay between accounts when doing onchain actions from 0.5 to <your_value>
   delayFaucet: 20, // (seconds) Delay between account on faucet
   transactionTimeout: 40, // (seconds) How long to wait for transaction confirmation
