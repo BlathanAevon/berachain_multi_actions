@@ -11,7 +11,7 @@ export class Bend extends BaseApp {
     super(wallet, BEND_ADDRESS, BEND_ABI);
   }
 
-  async deposit(token: string, amount: number): Promise<void> {
+  public async deposit(token: string, amount: number): Promise<void> {
     if ((await this.wallet.getTokenBalance(token)) < amount) {
       throw `${this.deposit.name} "Amount exceeds available token balance"`;
     } else if (
@@ -42,7 +42,7 @@ export class Bend extends BaseApp {
     }
   }
 
-  async withdraw(token: string, amount: number): Promise<void> {
+  public async withdraw(token: string, amount: number): Promise<void> {
     try {
       const transaction = await this.contract.withdraw(
         token,
@@ -64,7 +64,7 @@ export class Bend extends BaseApp {
     }
   }
 
-  async borrow(amount: number): Promise<void> {
+  public async borrow(amount: number): Promise<void> {
     try {
       const decimals = await this.wallet.getTokenDecimals(HONEY);
       const transaction = await this.contract.borrow(
@@ -85,7 +85,7 @@ export class Bend extends BaseApp {
     }
   }
 
-  async repay(amount: number): Promise<void> {
+  public async repay(amount: number): Promise<void> {
     if ((await this.wallet.getTokenBalance(HONEY)) < amount) {
       throw new Error(
         `${this.deposit.name} "Amount exceeds available token balance"`
