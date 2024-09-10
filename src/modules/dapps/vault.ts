@@ -5,6 +5,7 @@ import { ethers } from "ethers-ts";
 import { HONEY } from "../../blockchain_data/tokens";
 import { BaseApp } from "../classes/baseApp";
 import { lpTokenDepositParameters } from "../../utils/types";
+import { DEFAULT_APPROVE_AMOUNT, DEFAULT_GAS_LIMIT } from "../constants/dapps";
 
 export class Vault extends BaseApp {
   constructor(wallet: Wallet) {
@@ -17,7 +18,7 @@ export class Vault extends BaseApp {
         `${this.stakeHoney.name} "Amount exceeds available token balance"`
       );
     } else if (Number(await this.wallet.getAllowance(HONEY, VAULT)) < amount) {
-      await this.wallet.approve(VAULT, HONEY, 999999999);
+      await this.wallet.approve(VAULT, HONEY, DEFAULT_APPROVE_AMOUNT);
     }
 
     const stakeAmount = ethers.utils.parseUnits(
@@ -30,7 +31,7 @@ export class Vault extends BaseApp {
         stakeAmount,
         this.wallet.address,
         {
-          gasLimit: 600000 + Math.floor(Math.random() * 10000),
+          gasLimit: DEFAULT_GAS_LIMIT,
         }
       );
 
@@ -52,7 +53,7 @@ export class Vault extends BaseApp {
       const transaction = await this.contract.makeWithdrawRequest(
         withdrawAmount,
         {
-          gasLimit: 300000 + Math.floor(Math.random() * 10000),
+          gasLimit: DEFAULT_GAS_LIMIT,
         }
       );
 
@@ -85,7 +86,7 @@ export class Vault extends BaseApp {
       await this.wallet.approve(
         parameters.vaultAddress,
         parameters.liquidityTokenAddress,
-        999999999
+        DEFAULT_APPROVE_AMOUNT
       );
     }
 
@@ -99,7 +100,7 @@ export class Vault extends BaseApp {
       const transaction = await contract.stake(
         ethers.utils.parseEther(parameters.amountToAdd.toString()),
         {
-          gasLimit: 600000 + Math.floor(Math.random() * 10000),
+          gasLimit: DEFAULT_GAS_LIMIT,
         }
       );
 

@@ -3,6 +3,9 @@ import { CaptchaResponse, Account } from "../../utils/types";
 import axios from "axios";
 import config from "../../config";
 
+const COOLDOWN_STATUS = 429;
+const LOW_BALANCE_STATUS = 402;
+
 export class Faucet {
   static async solveCaptcha(): Promise<any> {
     try {
@@ -38,7 +41,7 @@ export class Faucet {
 
   static async dripTokens(account: Account, bearer: string): Promise<void> {
     try {
-      const response: CaptchaResponse = await axios.post(
+      await axios.post(
         `https://bartio-faucet.berachain-devnet.com/api/claim?address=${account.wallet}`,
         { address: account.wallet },
         {
@@ -64,19 +67,18 @@ export class Faucet {
         0,
         4
       )}...${account.wallet.slice(-4)}`;
+
+      const walletMessage = `Wallet: ${shortWallet}`;
+
       if (error.response) {
-        if (error.response.status == 402) {
-          throw new Error(`Wallet: ${shortWallet} You don't have 0.001 ETH.`);
-        } else if (error.response.status == 429) {
-          throw new Error(
-            `Wallet: ${shortWallet} Is in cooldown, try again later`
-          );
+        if (error.response.status == LOW_BALANCE_STATUS) {
+          throw new Error(`${walletMessage} You don't have 0.001 ETH.`);
+        } else if (error.response.status == COOLDOWN_STATUS) {
+          throw new Error(`${walletMessage} Is in cooldown, try again later`);
         }
-        throw new Error(`Wallet: ${shortWallet} ${error}`);
+        throw new Error(`${walletMessage} Unknown error: ${error}`);
       }
-      throw new Error(
-        `Wallet: ${shortWallet} Could not make a response ${error}`
-      );
+      throw new Error(`${walletMessage} Could not make a response ${error}`);
     }
   }
 }

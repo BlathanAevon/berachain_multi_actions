@@ -8,7 +8,6 @@ import {
 import {
   APPROVE_LIQUIDITY,
   DEXADDRESS,
-  LIQUIDITY_ROUTER,
   WBERA_CONTRACT,
 } from "../../blockchain_data/contracts";
 import { Wallet } from "../classes/wallet";
@@ -17,6 +16,7 @@ import { getSwapPath } from "../../utils/utils";
 import { AddLiquidityParameters } from "../../utils/types";
 import tokenNames from "../../blockchain_data/tokenNames";
 import logger from "../../utils/logger";
+import { DEFAULT_APPROVE_AMOUNT, DEFAULT_GAS_LIMIT } from "../constants/dapps";
 
 export class BexSwap extends BaseApp {
   constructor(wallet: Wallet) {
@@ -28,7 +28,7 @@ export class BexSwap extends BaseApp {
       const transaction = {
         to: WBERA_CONTRACT,
         value: ethers.utils.parseEther(amount.toString()),
-        gasLimit: 300000 + Math.floor(Math.random() * 10000),
+        gasLimit: DEFAULT_GAS_LIMIT,
       };
 
       const sentTransaction: ethers.providers.TransactionResponse =
@@ -54,7 +54,7 @@ export class BexSwap extends BaseApp {
         await wberaContract.withdraw(
           ethers.utils.parseUnits(amount.toString(), 18),
           {
-            gasLimit: 300000 + Math.floor(Math.random() * 10000),
+            gasLimit: DEFAULT_GAS_LIMIT,
             nonce: this.wallet.provider.getTransactionCount(
               this.wallet.address
             ),
@@ -84,7 +84,11 @@ export class BexSwap extends BaseApp {
       if (
         Number(await this.wallet.getAllowance(tokenFrom, DEXADDRESS)) < amount
       ) {
-        await this.wallet.approve(DEXADDRESS, tokenFrom, 999999999);
+        await this.wallet.approve(
+          DEXADDRESS,
+          tokenFrom,
+          DEFAULT_APPROVE_AMOUNT
+        );
       }
 
       swapAmount = ethers.utils.parseUnits(
@@ -142,7 +146,7 @@ export class BexSwap extends BaseApp {
           swapAmount,
           0,
           {
-            gasLimit: 2000000,
+            gasLimit: DEFAULT_GAS_LIMIT,
             value: tokenFrom != BERA ? 0 : swapAmount,
           }
         );
@@ -185,7 +189,7 @@ export class BexSwap extends BaseApp {
         await this.wallet.approve(
           APPROVE_LIQUIDITY,
           firstTokenAddress,
-          999999999999999
+          DEFAULT_APPROVE_AMOUNT
         );
       }
     }
@@ -208,7 +212,7 @@ export class BexSwap extends BaseApp {
         await this.wallet.approve(
           APPROVE_LIQUIDITY,
           secondTokenAddress,
-          999999999
+          DEFAULT_APPROVE_AMOUNT
         );
       }
     }
@@ -282,7 +286,7 @@ export class BexSwap extends BaseApp {
         `Trying to add ${tokenNames[firstTokenAddress]} and ${tokenNames[secondTokenAddress]} to pool`
       );
       const transaction: any = await contract.userCmd(128, poolCmdData, {
-        gasLimit: 2000000,
+        gasLimit: DEFAULT_GAS_LIMIT,
         value:
           parameters.secondTokenAddress == BERA
             ? ethers.utils.parseEther(parameters.amountToAdd.toString())
