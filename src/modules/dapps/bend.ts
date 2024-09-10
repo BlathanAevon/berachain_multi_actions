@@ -4,6 +4,7 @@ import { Wallet } from "../classes/wallet";
 import { ethers } from "ethers-ts";
 import { BaseApp } from "../classes/baseApp";
 import { HONEY } from "../../blockchain_data/tokens";
+import { DEFAULT_APPROVE_AMOUNT, DEFAULT_GAS_LIMIT } from "../constants/dapps";
 
 export class Bend extends BaseApp {
   constructor(wallet: Wallet) {
@@ -16,7 +17,7 @@ export class Bend extends BaseApp {
     } else if (
       Number(await this.wallet.getAllowance(token, BEND_ADDRESS)) < amount
     ) {
-      await this.wallet.approve(BEND_ADDRESS, token, 999999999);
+      await this.wallet.approve(BEND_ADDRESS, token, DEFAULT_APPROVE_AMOUNT);
     }
 
     try {
@@ -29,7 +30,7 @@ export class Bend extends BaseApp {
         this.wallet.address,
         18,
         {
-          gasLimit: 600000 + Math.floor(Math.random() * 10000),
+          gasLimit: DEFAULT_GAS_LIMIT,
         }
       );
 
@@ -51,7 +52,7 @@ export class Bend extends BaseApp {
         ),
         this.wallet.address,
         {
-          gasLimit: 600000 + Math.floor(Math.random() * 10000),
+          gasLimit: DEFAULT_GAS_LIMIT,
         }
       );
 
@@ -73,7 +74,7 @@ export class Bend extends BaseApp {
         0,
         this.wallet.address,
         {
-          gasLimit: 600000 + Math.floor(Math.random() * 10000),
+          gasLimit: DEFAULT_GAS_LIMIT,
         }
       );
 
@@ -92,7 +93,7 @@ export class Bend extends BaseApp {
     } else if (
       Number(await this.wallet.getAllowance(HONEY, BEND_ADDRESS)) < amount
     ) {
-      await this.wallet.approve(BEND_ADDRESS, HONEY, 999999999);
+      await this.wallet.approve(BEND_ADDRESS, HONEY, DEFAULT_APPROVE_AMOUNT);
     }
 
     try {
@@ -103,7 +104,7 @@ export class Bend extends BaseApp {
         2,
         this.wallet.address,
         {
-          gasLimit: 600000 + Math.floor(Math.random() * 10000),
+          gasLimit: DEFAULT_GAS_LIMIT,
         }
       );
 

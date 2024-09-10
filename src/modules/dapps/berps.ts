@@ -4,6 +4,7 @@ import { Wallet } from "../classes/wallet";
 import { ethers } from "ethers-ts";
 import { BHONEY } from "../../blockchain_data/tokens";
 import { BaseApp } from "../classes/baseApp";
+import { DEFAULT_APPROVE_AMOUNT, DEFAULT_GAS_LIMIT } from "../constants/dapps";
 
 export class Berps extends BaseApp {
   constructor(wallet: Wallet) {
@@ -16,7 +17,7 @@ export class Berps extends BaseApp {
         `${this.stakeBHoney.name} "Amount exceeds available token balance or not enough for transaction"`
       );
     } else if (Number(await this.wallet.getAllowance(BHONEY, BERPS)) < amount) {
-      await this.wallet.approve(BERPS, BHONEY, 999999999);
+      await this.wallet.approve(BERPS, BHONEY, DEFAULT_APPROVE_AMOUNT);
     }
 
     const stakeAmount = ethers.utils.parseUnits(
@@ -26,7 +27,7 @@ export class Berps extends BaseApp {
 
     try {
       const transaction = await this.contract.stake(stakeAmount, {
-        gasLimit: 400000 + Math.floor(Math.random() * 10000),
+        gasLimit: DEFAULT_GAS_LIMIT,
       });
 
       await this.wallet.waitForTx("Stake bHONEY", transaction);

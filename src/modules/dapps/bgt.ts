@@ -5,6 +5,7 @@ import { BGTT, HONEY } from "../../blockchain_data/tokens";
 import { BaseApp } from "../classes/baseApp";
 import { StationContract } from "../../utils/types";
 import { Wallet } from "../classes/wallet";
+import { DEFAULT_APPROVE_AMOUNT, DEFAULT_GAS_LIMIT } from "../constants/dapps";
 
 export class BGT extends BaseApp {
   bendRewardContract: ethers.Contract;
@@ -35,7 +36,7 @@ export class BGT extends BaseApp {
       const transaction = await this.bendRewardContract.getReward(
         this.wallet.address,
         {
-          gasLimit: 200000,
+          gasLimit: DEFAULT_GAS_LIMIT,
         }
       );
 
@@ -51,7 +52,7 @@ export class BGT extends BaseApp {
       const transaction = await this.bexRewardContract.getReward(
         this.wallet.address,
         {
-          gasLimit: 200000,
+          gasLimit: DEFAULT_GAS_LIMIT,
         }
       );
 
@@ -67,7 +68,7 @@ export class BGT extends BaseApp {
       const transaction = await this.berpsRewardContract.getReward(
         this.wallet.address,
         {
-          gasLimit: 200000,
+          gasLimit: DEFAULT_GAS_LIMIT,
         }
       );
 
@@ -99,7 +100,7 @@ export class BGT extends BaseApp {
       );
     }
 
-    await this.wallet.approve(contract, HONEY, 999999999);
+    await this.wallet.approve(contract, HONEY, DEFAULT_APPROVE_AMOUNT);
 
     try {
       const amount = ethers.utils.parseUnits(
@@ -111,7 +112,7 @@ export class BGT extends BaseApp {
         amount,
         amount,
         {
-          gasLimit: 600000 + Math.floor(Math.random() * 10000),
+          gasLimit: DEFAULT_GAS_LIMIT,
         }
       );
 
@@ -144,7 +145,7 @@ export class BGT extends BaseApp {
         await this.wallet.getTokenDecimals(BGTT)
       );
       const transaction = await delegateContract.queueBoost(validator, amount, {
-        gasLimit: 600000 + Math.floor(Math.random() * 10000),
+        gasLimit: DEFAULT_GAS_LIMIT,
       });
 
       await this.wallet.waitForTx(
@@ -159,13 +160,11 @@ export class BGT extends BaseApp {
   }
 
   async activateBoost(validator): Promise<any> {
-    const balance = await this.wallet.getTokenBalance(BGTT);
-
-    const conract = new ethers.Contract(BGTT, BGT_REWARD_ABI, this.wallet);
+    const contract = new ethers.Contract(BGTT, BGT_REWARD_ABI, this.wallet);
 
     try {
-      const transaction = await conract.activateBoost(validator, {
-        gasLimit: 600000 + Math.floor(Math.random() * 10000),
+      const transaction = await contract.activateBoost(validator, {
+        gasLimit: DEFAULT_GAS_LIMIT,
       });
 
       await this.wallet.waitForTx("Activate Boost", transaction);
