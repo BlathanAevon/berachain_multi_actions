@@ -2,8 +2,9 @@ import config from "../config";
 import { BGT } from "../modules/dapps/bgt";
 import { Wallet } from "../modules/classes/wallet";
 import { Account } from "../utils/types";
-import { rint, shuffleArray, sleep } from "../utils/utils";
-import logger from "../utils/logger";
+import logger from "../modules/classes/logger";
+import { DataHelper } from "../modules/classes/dataHelper";
+const { shuffleArray, rint, sleep } = DataHelper;
 
 export const runGetBgtRewards = async (accounts: Account[]): Promise<void> => {
   await Promise.all(

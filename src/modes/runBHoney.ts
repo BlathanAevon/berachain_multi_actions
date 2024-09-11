@@ -1,12 +1,13 @@
 import { Account } from "../utils/types";
 import { BERA, BHONEY, HONEY } from "../blockchain_data/tokens";
 import { Wallet } from "../modules/classes/wallet";
-import { rint, sleep } from "../utils/utils";
 import { BexSwap } from "../modules/dapps/bexSwap";
 import { Berps } from "../modules/dapps/berps";
 import { Vault } from "../modules/dapps/vault";
 import config from "../config";
-import logger from "../utils/logger";
+import logger from "../modules/classes/logger";
+import { DataHelper } from "../modules/classes/dataHelper";
+const { sleep, rint } = DataHelper;
 
 export const runBHoney = async (accounts: Account[]): Promise<void> => {
   await Promise.all(

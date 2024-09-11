@@ -1,19 +1,13 @@
 import { Account } from "../utils/types";
-import {
-  BERA,
-  BHONEY,
-  HONEY,
-  WBTC,
-  WETH,
-  WBERA,
-} from "../blockchain_data/tokens";
+import { BERA, WBTC, WETH } from "../blockchain_data/tokens";
 import { Wallet } from "../modules/classes/wallet";
-import { randomChoice, rint, sleep } from "../utils/utils";
 import config from "../config";
 import { Bend } from "../modules/dapps/bend";
-import logger from "../utils/logger";
 import { BexSwap } from "../modules/dapps/bexSwap";
 import tokenNames from "../blockchain_data/tokenNames";
+import { DataHelper } from "../modules/classes/dataHelper";
+import logger from "../modules/classes/logger";
+const { randomChoice, rint, sleep } = DataHelper;
 
 export const runVDHoney = async (accounts: Account[]): Promise<void> => {
   await Promise.all(

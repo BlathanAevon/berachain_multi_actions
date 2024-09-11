@@ -1,8 +1,9 @@
 import config from "../config";
 import { Faucet } from "../modules/misc/faucet";
 import { Account } from "../utils/types";
-import { rint, sleep } from "../utils/utils";
-import logger from "../utils/logger";
+import logger from "../modules/classes/logger";
+import { DataHelper } from "../modules/classes/dataHelper";
+const { rint, sleep } = DataHelper;
 
 export const runFaucet = async (accounts: Account[]): Promise<void> => {
   await Promise.all(

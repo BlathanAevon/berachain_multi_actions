@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { Wallet } from "../classes/wallet";
+import { Wallet } from "./wallet";
 
 export class BaseApp {
   protected wallet: Wallet;

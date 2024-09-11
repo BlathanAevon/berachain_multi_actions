@@ -12,11 +12,12 @@ import {
 } from "../../blockchain_data/contracts";
 import { Wallet } from "../classes/wallet";
 import { BaseApp } from "../classes/baseApp";
-import { getSwapPath } from "../../utils/utils";
 import { AddLiquidityParameters } from "../../utils/types";
 import tokenNames from "../../blockchain_data/tokenNames";
-import logger from "../../utils/logger";
+import logger from "../classes/logger";
 import { DEFAULT_APPROVE_AMOUNT, DEFAULT_GAS_LIMIT } from "../constants/dapps";
+import { DataHelper } from "../classes/dataHelper";
+const { getSwapPath } = DataHelper;
 
 export class BexSwap extends BaseApp {
   constructor(wallet: Wallet) {
