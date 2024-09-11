@@ -3,11 +3,11 @@ import { VAULT } from "../../blockchain_data/contracts";
 import { Wallet } from "../classes/wallet";
 import { ethers } from "ethers-ts";
 import { HONEY } from "../../blockchain_data/tokens";
-import { BaseApp } from "../classes/baseApp";
+import { DApp } from "../classes/DApp";
 import { lpTokenDepositParameters } from "../../utils/types";
 import { DEFAULT_APPROVE_AMOUNT, DEFAULT_GAS_LIMIT } from "../constants/dapps";
 
-export class Vault extends BaseApp {
+export class VaultApp extends DApp {
   constructor(wallet: Wallet) {
     super(wallet, VAULT, VAULT_ABI);
   }

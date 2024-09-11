@@ -8,6 +8,9 @@ const LOW_BALANCE_STATUS = 402;
 const PROXY_AUTH_REQUIRED_STATUS = 407;
 
 export class Faucet {
+  private static FAUCET_URL = "https://bartio.faucet.berachain.com/";
+  private static FAUCET_CAPTCHA_KEY = "0x4AAAAAAARdAuciFArKhVwt";
+
   private static async solveFaucetCaptcha(): Promise<any> {
     try {
       let result;
@@ -15,8 +18,8 @@ export class Faucet {
         clientKey: config.capsolverKey,
         task: {
           type: "AntiTurnstileTaskProxyLess",
-          websiteURL: "https://bartio.faucet.berachain.com/",
-          websiteKey: "0x4AAAAAAARdAuciFArKhVwt",
+          websiteURL: this.FAUCET_URL,
+          websiteKey: this.FAUCET_CAPTCHA_KEY,
         },
       });
 

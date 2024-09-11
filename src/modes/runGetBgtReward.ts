@@ -1,5 +1,5 @@
 import config from "../config";
-import { BGT } from "../modules/dapps/bgt";
+import { BGTApp } from "../modules/dapps/bgt";
 import { Wallet } from "../modules/classes/wallet";
 import { Account } from "../utils/types";
 import logger from "../modules/classes/logger";
@@ -9,8 +9,8 @@ const { shuffleArray, rint, sleep } = DataHelper;
 export const runGetBgtRewards = async (accounts: Account[]): Promise<void> => {
   await Promise.all(
     accounts.map(async (account) => {
-      const wallet = new Wallet(account.key);
-      const bgt = new BGT(wallet);
+      const wallet: Wallet = new Wallet(account.key);
+      const bgt: BGTApp = new BGTApp(wallet);
 
       const actions = [
         async () => await bgt.getBendBgtReward(),

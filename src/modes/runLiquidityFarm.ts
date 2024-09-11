@@ -5,8 +5,8 @@ import {
 } from "../utils/types";
 import { BERA, HONEY, STGUSDC } from "../blockchain_data/tokens";
 import { Wallet } from "../modules/classes/wallet";
-import { BexSwap } from "../modules/dapps/bexSwap";
-import { Vault } from "../modules/dapps/vault";
+import { BexApp } from "../modules/dapps/bex.ts";
+import { VaultApp } from "../modules/dapps/vault";
 import config from "../config";
 import logger from "../modules/classes/logger.ts";
 import { HONEY_USDC, HONEY_WBERA } from "../blockchain_data/pools";
@@ -25,8 +25,8 @@ export const runLiquidityFarm = async (accounts: Account[]): Promise<void> => {
   await Promise.all(
     accounts.map(async (account) => {
       const wallet: Wallet = new Wallet(account.key);
-      const vault: Vault = new Vault(wallet);
-      const bex: BexSwap = new BexSwap(wallet);
+      const vault: VaultApp = new VaultApp(wallet);
+      const bex: BexApp = new BexApp(wallet);
 
       await sleep(rint(1000, config.delayOnChainTo * 1000));
 

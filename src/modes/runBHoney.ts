@@ -1,9 +1,9 @@
 import { Account } from "../utils/types";
 import { BERA, BHONEY, HONEY } from "../blockchain_data/tokens";
 import { Wallet } from "../modules/classes/wallet";
-import { BexSwap } from "../modules/dapps/bexSwap";
-import { Berps } from "../modules/dapps/berps";
-import { Vault } from "../modules/dapps/vault";
+import { BexApp } from "../modules/dapps/bex";
+import { BerpsApp } from "../modules/dapps/berps";
+import { VaultApp } from "../modules/dapps/vault";
 import config from "../config";
 import logger from "../modules/classes/logger";
 import { DataHelper } from "../modules/classes/dataHelper";
@@ -13,9 +13,9 @@ export const runBHoney = async (accounts: Account[]): Promise<void> => {
   await Promise.all(
     accounts.map(async (account) => {
       const wallet: Wallet = new Wallet(account.key);
-      const vault: Vault = new Vault(wallet);
-      const berps: Berps = new Berps(wallet);
-      const bex: BexSwap = new BexSwap(wallet);
+      const vault: VaultApp = new VaultApp(wallet);
+      const berps: BerpsApp = new BerpsApp(wallet);
+      const bex: BexApp = new BexApp(wallet);
 
       try {
         await sleep(rint(1000, config.delayOnChainTo * 1000));

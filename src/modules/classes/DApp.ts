@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { Wallet } from "./wallet";
 
-export class BaseApp {
+export class DApp {
   protected wallet: Wallet;
   protected contract: ethers.Contract;
 
