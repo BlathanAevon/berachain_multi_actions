@@ -1,22 +1,18 @@
 import config from "../config";
 import { BGT } from "../modules/dapps/bgt";
 import { Wallet } from "../modules/classes/wallet";
-import { Account, Delegation, delegationState } from "../utils/types";
-import {
-  changeDelegationState,
-  cleanDelegationState,
-  randomChoice,
-  rint,
-  sleep,
-} from "../utils/utils";
-import logger from "../utils/logger";
+import { Account, Delegation } from "../utils/types";
+import logger from "../modules/classes/logger";
 import { BGTT } from "../blockchain_data/tokens";
 import validators from "../blockchain_data/validators";
+import { JsonWorker } from "../modules/classes/jsonWorker";
+import { DataHelper } from "../modules/classes/dataHelper";
+const { randomChoice, rint, sleep } = DataHelper;
 
 export const runDelegate = async (accounts: Account[]): Promise<void> => {
   let delegations: Delegation[] = [];
 
-  cleanDelegationState();
+  JsonWorker.cleanDelegationState();
 
   await Promise.all(
     accounts.map(async (account) => {
@@ -38,9 +34,9 @@ export const runDelegate = async (accounts: Account[]): Promise<void> => {
       } catch (error) {
         logger.error(error);
         return;
+      } finally {
+        JsonWorker.writeDelegationState(delegations);
       }
     })
   );
-
-  changeDelegationState(delegations);
 };

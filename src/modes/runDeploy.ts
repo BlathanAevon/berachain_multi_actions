@@ -2,8 +2,9 @@ import { Account } from "../utils/types";
 import { Wallet } from "../modules/classes/wallet";
 import { Deployer } from "../modules/misc/deployer";
 import config from "../config";
-import { rint, sleep } from "../utils/utils";
-import logger from "../utils/logger";
+import logger from "../modules/classes/logger";
+import { DataHelper } from "../modules/classes/dataHelper";
+const { rint, sleep } = DataHelper;
 
 export const runDeploy = async (accounts: Account[]): Promise<void> => {
   await Promise.all(

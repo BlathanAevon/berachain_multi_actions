@@ -1,6 +1,5 @@
 import { Account } from "./utils/types";
-import { createAccounts } from "./utils/utils";
-import logger from "./utils/logger";
+import logger from "./modules/classes/logger";
 import inquirer from "inquirer";
 import { runDeploy } from "./modes/runDeploy";
 import { runFaucet } from "./modes/runFaucet";
@@ -13,12 +12,13 @@ import { runDelegate } from "./modes/runDelegate";
 import { runActivateBoost } from "./modes/runActivateBoost";
 import { runLiquidityFarm } from "./modes/runLiquidityFarm";
 import config from "./config";
+import { AccountsWorker } from "./modules/classes/accountsWorker";
 
 const main = async () => {
   let accounts: Account[];
 
   try {
-    accounts = await createAccounts(config.shuffleWallets);
+    accounts = await AccountsWorker.createAccounts(config.shuffleWallets);
   } catch (error) {
     logger.error(error);
     return;
@@ -71,7 +71,7 @@ const main = async () => {
         logger.info("Goodbye!");
         process.exit(1);
       default:
-        logger.warn("\nWrong or empty arguments.");
+        logger.error("\nWrong or empty arguments.");
         break;
     }
   }

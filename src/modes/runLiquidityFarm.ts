@@ -5,11 +5,10 @@ import {
 } from "../utils/types";
 import { BERA, HONEY, STGUSDC } from "../blockchain_data/tokens";
 import { Wallet } from "../modules/classes/wallet";
-import { randomChoice, rint, sleep } from "../utils/utils";
 import { BexSwap } from "../modules/dapps/bexSwap";
 import { Vault } from "../modules/dapps/vault";
 import config from "../config";
-import logger from "../utils/logger";
+import logger from "../modules/classes/logger.ts";
 import { HONEY_USDC, HONEY_WBERA } from "../blockchain_data/pools";
 import {
   HONEY_USDC_LP_TOKEN,
@@ -19,6 +18,8 @@ import {
   HONEY_USDC_VAULT,
   HONEY_WBERA_VAULT,
 } from "../blockchain_data/vaults.ts";
+import { DataHelper } from "../modules/classes/dataHelper";
+const { randomChoice, rint, sleep } = DataHelper;
 
 export const runLiquidityFarm = async (accounts: Account[]): Promise<void> => {
   await Promise.all(

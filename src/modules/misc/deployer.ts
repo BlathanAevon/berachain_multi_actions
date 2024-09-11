@@ -18,7 +18,7 @@ export class Deployer {
       );
       let contract = await factory.deploy();
 
-      this.wallet.waitForTx("Deploy", contract.deployTransaction);
+      await this.wallet.waitForTx("Deploy", contract.deployTransaction);
     } catch (error) {
       throw error;
     }

@@ -1,8 +1,9 @@
-import logger from "../../utils/logger";
 import { BigNumber, ethers } from "ethers-ts";
+import logger from "./logger";
 import { ERC20ABI } from "../../blockchain_data/abi";
 import config from "../../config";
-import { formatAmount } from "../../utils/utils";
+import { DataHelper } from "./dataHelper";
+const { formatAmount } = DataHelper;
 
 export class Wallet extends ethers.Wallet {
   constructor(privateKey: string) {
