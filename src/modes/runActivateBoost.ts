@@ -1,5 +1,5 @@
 import config from "../config";
-import { BGT } from "../modules/dapps/bgt";
+import { BGTApp } from "../modules/dapps/bgt";
 import { Wallet } from "../modules/classes/wallet";
 import { Account } from "../utils/types";
 import { JsonWorker } from "../modules/classes/jsonWorker";
@@ -15,7 +15,7 @@ export const runActivateBoost = async (accounts: Account[]): Promise<void> => {
   await Promise.all(
     accounts.map(async (account) => {
       const wallet = new Wallet(account.key);
-      const bgt = new BGT(wallet);
+      const bgt = new BGTApp(wallet);
 
       await sleep(rint(1000, config.delayOnChainTo * 1000));
 

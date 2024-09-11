@@ -3,10 +3,10 @@ import { BERPS } from "../../blockchain_data/contracts";
 import { Wallet } from "../classes/wallet";
 import { ethers } from "ethers-ts";
 import { BHONEY } from "../../blockchain_data/tokens";
-import { BaseApp } from "../classes/baseApp";
+import { DApp } from "../classes/DApp";
 import { DEFAULT_APPROVE_AMOUNT, DEFAULT_GAS_LIMIT } from "../constants/dapps";
 
-export class Berps extends BaseApp {
+export class BerpsApp extends DApp {
   constructor(wallet: Wallet) {
     super(wallet, BERPS, BERPS_ABI);
   }

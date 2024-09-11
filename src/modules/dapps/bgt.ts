@@ -2,12 +2,12 @@ import { BigNumber, ethers } from "ethers-ts";
 import { BGT_REWARD_ABI, ERC20ABI } from "../../blockchain_data/abi";
 import { BEND_BGT_REWARD, BERPS, BEX } from "../../blockchain_data/contracts";
 import { BGTT, HONEY } from "../../blockchain_data/tokens";
-import { BaseApp } from "../classes/baseApp";
+import { DApp } from "../classes/DApp";
 import { StationContract } from "../../utils/types";
 import { Wallet } from "../classes/wallet";
 import { DEFAULT_APPROVE_AMOUNT, DEFAULT_GAS_LIMIT } from "../constants/dapps";
 
-export class BGT extends BaseApp {
+export class BGTApp extends DApp {
   bendRewardContract: ethers.Contract;
   berpsRewardContract: ethers.Contract;
   bexRewardContract: ethers.Contract;
