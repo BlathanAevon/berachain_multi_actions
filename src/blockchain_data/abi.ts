@@ -855,6 +855,49 @@ export const BGT_REWARD_ABI = [
     outputs: [],
     stateMutability: "nonpayable",
   },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "validator",
+        type: "address",
+      },
+    ],
+    name: "boosted",
+    outputs: [
+      {
+        internalType: "uint128",
+        name: "",
+        type: "uint128",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "boosts",
+    outputs: [
+      {
+        internalType: "uint128",
+        name: "",
+        type: "uint128",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
 ];
 
 export const BEND_BORROW_ABI = [
