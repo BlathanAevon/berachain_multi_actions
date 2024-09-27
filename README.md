@@ -55,6 +55,3 @@ run.bat
 ```bash
 ./run.sh
 ```
-
-> [!NOTE]
-> The Delegation BGT to Validator module works only once (it means that after you delegated, you will not be able to delegate again due to wrong balance checking) 

@@ -133,3 +133,5 @@ dist
 src/wallets.txt
 src/proxies.txt
 src/data/delegationState.json
+src/config.ts
+src/data/delegationState.json

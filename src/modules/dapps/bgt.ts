@@ -6,6 +6,7 @@ import { DApp } from "../classes/DApp";
 import { StationContract } from "../../utils/types";
 import { Wallet } from "../classes/wallet";
 import { DEFAULT_APPROVE_AMOUNT, DEFAULT_GAS_LIMIT } from "../constants/dapps";
+import validators from "../../blockchain_data/validators";
 
 export class BGTApp extends DApp {
   bendRewardContract: ethers.Contract;
@@ -133,6 +134,11 @@ export class BGTApp extends DApp {
       this.wallet
     );
 
+    const boostedBgtAmount =
+      (await delegateContract.boosts(this.wallet.address)) / 10 ** 18;
+
+    amountToDelegate -= boostedBgtAmount * 0.99;
+
     if (balance < amountToDelegate) {
       throw new Error(
         `${this.delegateBGT.name}: Amount exceeds available BGT balance. Balance: ${balance}`
@@ -144,12 +150,13 @@ export class BGTApp extends DApp {
         amountToDelegate.toString(),
         await this.wallet.getTokenDecimals(BGTT)
       );
+
       const transaction = await delegateContract.queueBoost(validator, amount, {
         gasLimit: DEFAULT_GAS_LIMIT,
       });
 
       await this.wallet.waitForTx(
-        `Delegating ${amountToDelegate} BGT to Validator`,
+        `Delegating ${amountToDelegate.toFixed(4)} BGT to Validator`,
         transaction
       );
 
@@ -159,7 +166,7 @@ export class BGTApp extends DApp {
     }
   }
 
-  async activateBoost(validator): Promise<any> {
+  async activateBoost(validator: string): Promise<any> {
     const contract = new ethers.Contract(BGTT, BGT_REWARD_ABI, this.wallet);
 
     try {
