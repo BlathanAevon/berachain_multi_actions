@@ -15,7 +15,8 @@ export const runGetBgtRewards = async (accounts: Account[]): Promise<void> => {
       const actions = [
         async () => await bgt.getBendBgtReward(),
         async () => await bgt.getBerpsBgtReward(),
-        async () => await bgt.getBexBgtReward(),
+        async () => await bgt.getHoneyUsdcBgtReward(),
+        async () => await bgt.getHoneyWberaBgtReward(),
       ];
 
       shuffleArray(actions);
