@@ -7,11 +7,16 @@ import { StationContract } from "../../utils/types";
 import { Wallet } from "../classes/wallet";
 import { DEFAULT_APPROVE_AMOUNT, DEFAULT_GAS_LIMIT } from "../constants/dapps";
 import validators from "../../blockchain_data/validators";
+import {
+  HONEY_USDC_VAULT,
+  HONEY_WBERA_VAULT,
+} from "../../blockchain_data/vaults";
 
 export class BGTApp extends DApp {
   bendRewardContract: ethers.Contract;
   berpsRewardContract: ethers.Contract;
-  bexRewardContract: ethers.Contract;
+  bexRewardHoneyWberaContract: ethers.Contract;
+  bexRewardHoneyUsdcContract: ethers.Contract;
 
   constructor(wallet: Wallet) {
     super(wallet, BGTT, ERC20ABI);
@@ -25,8 +30,13 @@ export class BGTApp extends DApp {
       BGT_REWARD_ABI,
       this.wallet
     );
-    this.bexRewardContract = new ethers.Contract(
-      BEX,
+    this.bexRewardHoneyWberaContract = new ethers.Contract(
+      HONEY_WBERA_VAULT,
+      BGT_REWARD_ABI,
+      this.wallet
+    );
+    this.bexRewardHoneyUsdcContract = new ethers.Contract(
+      HONEY_USDC_VAULT,
       BGT_REWARD_ABI,
       this.wallet
     );
@@ -48,16 +58,38 @@ export class BGTApp extends DApp {
     }
   }
 
-  async getBexBgtReward(): Promise<void> {
+  async getHoneyUsdcBgtReward(): Promise<void> {
     try {
-      const transaction = await this.bexRewardContract.getReward(
+      const transaction = await this.bexRewardHoneyUsdcContract.getReward(
         this.wallet.address,
         {
           gasLimit: DEFAULT_GAS_LIMIT,
         }
       );
 
-      await this.wallet.waitForTx("Get BGT reward FROM BEX", transaction);
+      await this.wallet.waitForTx(
+        "Get BGT reward FROM HONEY/USDC",
+        transaction
+      );
+      return;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getHoneyWberaBgtReward(): Promise<void> {
+    try {
+      const transaction = await this.bexRewardHoneyWberaContract.getReward(
+        this.wallet.address,
+        {
+          gasLimit: DEFAULT_GAS_LIMIT,
+        }
+      );
+
+      await this.wallet.waitForTx(
+        "Get BGT reward FROM HONEY/WBERA",
+        transaction
+      );
       return;
     } catch (error) {
       throw error;
