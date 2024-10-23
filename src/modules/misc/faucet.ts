@@ -8,7 +8,8 @@ const LOW_BALANCE_STATUS = 402;
 const PROXY_AUTH_REQUIRED_STATUS = 407;
 
 export class Faucet {
-  private static FAUCET_URL = "https://bartio.faucet.berachain.com/";
+  private static CAPTCHA_URL = "https://bartio.faucet.berachain.com";
+  private static FAUCET_URL = "https://bartiofaucet.berachain.com";
   private static FAUCET_CAPTCHA_KEY = "0x4AAAAAAARdAuciFArKhVwt";
 
   private static async solveFaucetCaptcha(): Promise<any> {
@@ -18,7 +19,7 @@ export class Faucet {
         clientKey: config.capsolverKey,
         task: {
           type: "AntiTurnstileTaskProxyLess",
-          websiteURL: this.FAUCET_URL,
+          websiteURL: this.CAPTCHA_URL,
           websiteKey: this.FAUCET_CAPTCHA_KEY,
         },
       });
@@ -49,7 +50,7 @@ export class Faucet {
   ): Promise<void> {
     try {
       await axios.post(
-        `https://bartio-faucet.berachain-devnet.com/api/claim?address=${account.wallet}`,
+        `${this.FAUCET_URL}/api/claim?address=${account.wallet}`,
         { address: account.wallet },
         {
           headers: {
