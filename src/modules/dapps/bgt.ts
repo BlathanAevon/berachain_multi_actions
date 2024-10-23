@@ -1,12 +1,11 @@
 import { BigNumber, ethers } from "ethers-ts";
 import { BGT_REWARD_ABI, ERC20ABI } from "../../blockchain_data/abi";
-import { BEND_BGT_REWARD, BERPS, BEX } from "../../blockchain_data/contracts";
+import { BEND_BGT_REWARD, BERPS } from "../../blockchain_data/contracts";
 import { BGTT, HONEY } from "../../blockchain_data/tokens";
 import { DApp } from "../classes/DApp";
 import { StationContract } from "../../utils/types";
 import { Wallet } from "../classes/wallet";
-import { DEFAULT_APPROVE_AMOUNT, DEFAULT_GAS_LIMIT } from "../constants/dapps";
-import validators from "../../blockchain_data/validators";
+import { DEFAULT_APPROVE_AMOUNT } from "../constants/dapps";
 import {
   HONEY_USDC_VAULT,
   HONEY_WBERA_VAULT,
@@ -43,13 +42,19 @@ export class BGTApp extends DApp {
   }
 
   async getBendBgtReward(): Promise<void> {
+    const gasLimit = await this.bendRewardContract.estimateGas.getReward(
+      this.wallet.address
+    );
+
+    const args = [
+      this.wallet.address,
+      {
+        gasLimit: gasLimit,
+      },
+    ];
+
     try {
-      const transaction = await this.bendRewardContract.getReward(
-        this.wallet.address,
-        {
-          gasLimit: DEFAULT_GAS_LIMIT,
-        }
-      );
+      const transaction = await this.bendRewardContract.getReward(...args);
 
       await this.wallet.waitForTx("Get BGT reward FROM BEND", transaction);
       return;
@@ -59,12 +64,21 @@ export class BGTApp extends DApp {
   }
 
   async getHoneyUsdcBgtReward(): Promise<void> {
+    const gasLimit =
+      await this.bexRewardHoneyUsdcContract.estimateGas.getReward(
+        this.wallet.address
+      );
+
+    const args = [
+      this.wallet.address,
+      {
+        gasLimit: gasLimit,
+      },
+    ];
+
     try {
       const transaction = await this.bexRewardHoneyUsdcContract.getReward(
-        this.wallet.address,
-        {
-          gasLimit: DEFAULT_GAS_LIMIT,
-        }
+        ...args
       );
 
       await this.wallet.waitForTx(
@@ -78,12 +92,21 @@ export class BGTApp extends DApp {
   }
 
   async getHoneyWberaBgtReward(): Promise<void> {
+    const gasLimit =
+      await this.bexRewardHoneyWberaContract.estimateGas.getReward(
+        this.wallet.address
+      );
+
+    const args = [
+      this.wallet.address,
+      {
+        gasLimit: gasLimit,
+      },
+    ];
+
     try {
       const transaction = await this.bexRewardHoneyWberaContract.getReward(
-        this.wallet.address,
-        {
-          gasLimit: DEFAULT_GAS_LIMIT,
-        }
+        ...args
       );
 
       await this.wallet.waitForTx(
@@ -97,13 +120,19 @@ export class BGTApp extends DApp {
   }
 
   async getBerpsBgtReward(): Promise<void> {
+    const gasLimit = await this.berpsRewardContract.estimateGas.getReward(
+      this.wallet.address
+    );
+
+    const args = [
+      this.wallet.address,
+      {
+        gasLimit: gasLimit,
+      },
+    ];
+
     try {
-      const transaction = await this.berpsRewardContract.getReward(
-        this.wallet.address,
-        {
-          gasLimit: DEFAULT_GAS_LIMIT,
-        }
-      );
+      const transaction = await this.berpsRewardContract.getReward(...args);
 
       await this.wallet.waitForTx("Get BGT reward FROM BERPS", transaction);
       return;
@@ -140,14 +169,23 @@ export class BGTApp extends DApp {
         amountToDelegate.toString(),
         await this.wallet.getTokenDecimals(HONEY)
       );
-      const transaction = await delegateContract.addIncentive(
+
+      const gasLimit = await delegateContract.estimateGas.addIncentive(
+        HONEY,
+        amount,
+        amount
+      );
+
+      const args = [
         HONEY,
         amount,
         amount,
         {
-          gasLimit: DEFAULT_GAS_LIMIT,
-        }
-      );
+          gasLimit: gasLimit,
+        },
+      ];
+
+      const transaction = await delegateContract.addIncentive(...args);
 
       await this.wallet.waitForTx("Delegate HONEY", transaction);
 
@@ -183,9 +221,20 @@ export class BGTApp extends DApp {
         await this.wallet.getTokenDecimals(BGTT)
       );
 
-      const transaction = await delegateContract.queueBoost(validator, amount, {
-        gasLimit: DEFAULT_GAS_LIMIT,
-      });
+      const gasLimit = await delegateContract.estimateGas.queueBoost(
+        validator,
+        amount
+      );
+
+      const args = [
+        validator,
+        amount,
+        {
+          gasLimit: gasLimit,
+        },
+      ];
+
+      const transaction = await delegateContract.queueBoost(...args);
 
       await this.wallet.waitForTx(
         `Delegating ${amountToDelegate.toFixed(4)} BGT to Validator`,
@@ -201,10 +250,17 @@ export class BGTApp extends DApp {
   async activateBoost(validator: string): Promise<any> {
     const contract = new ethers.Contract(BGTT, BGT_REWARD_ABI, this.wallet);
 
+    const gasLimit = await contract.estimateGas.activateBoost(validator);
+
+    const args = [
+      validator,
+      {
+        gasLimit: gasLimit,
+      },
+    ];
+
     try {
-      const transaction = await contract.activateBoost(validator, {
-        gasLimit: DEFAULT_GAS_LIMIT,
-      });
+      const transaction = await contract.activateBoost(...args);
 
       await this.wallet.waitForTx("Activate Boost", transaction);
 
