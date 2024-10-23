@@ -25,13 +25,18 @@ export class BerpsApp extends DApp {
       await this.wallet.getTokenDecimals(BHONEY)
     );
 
+    const gasLimit = await this.contract.estimateGas.stake(stakeAmount);
+
+    const args = [
+      stakeAmount,
+      {
+        gasLimit: gasLimit,
+      },
+    ];
+
     try {
-      const transaction = await this.contract.stake(stakeAmount, {
-        gasLimit: DEFAULT_GAS_LIMIT,
-      });
-
+      const transaction = await this.contract.stake(...args);
       await this.wallet.waitForTx("Stake bHONEY", transaction);
-
       return;
     } catch (error) {
       throw error;

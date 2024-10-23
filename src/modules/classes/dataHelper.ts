@@ -1,6 +1,4 @@
 import { BigNumber, ethers } from "ethers-ts";
-const randomUseragent = require("random-useragent");
-import axios from "axios";
 
 export class DataHelper {
   public static rint(from: number, to: number): number {
@@ -38,37 +36,5 @@ export class DataHelper {
 
   public static sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
-  public static async getSwapPath(
-    tokenFrom: string,
-    tokenTo: string,
-    amount
-  ): Promise<any> {
-    const headers = {
-      authority: "https://bartio-bex-router.berachain-devnet.com",
-      accept: "*/*",
-      "cache-control": "no-cache",
-      origin: "https://bartio.bex.berachain.com/",
-      pragma: "no-cache",
-      referer: "https://bartio.bex.berachain.com/",
-      "user-agent": randomUseragent.getRandom(),
-    };
-
-    const params = {
-      fromAsset: tokenTo,
-      toAsset: tokenFrom,
-      amount: amount,
-    };
-
-    const response = await axios.get(
-      `https://bartio-bex-router.berachain-devnet.com/dex/route?fromAsset=${tokenFrom}&toAsset=${tokenTo}&amount=${amount}`,
-      {
-        headers: headers,
-        params: params,
-      }
-    );
-
-    return response;
   }
 }

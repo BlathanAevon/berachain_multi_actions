@@ -17,19 +17,20 @@ import tokenNames from "../../blockchain_data/tokenNames";
 import logger from "../classes/logger";
 import { DEFAULT_APPROVE_AMOUNT, DEFAULT_GAS_LIMIT } from "../constants/dapps";
 import { DataHelper } from "../classes/dataHelper";
-const { getSwapPath } = DataHelper;
+const randomUseragent = require("random-useragent");
+import axios from "axios";
 
 export class BexApp extends DApp {
   constructor(wallet: Wallet) {
     super(wallet, DEXADDRESS, DEXABI);
   }
 
-  async wrapBera(amount: number): Promise<any> {
+  public async wrapBera(amount: number): Promise<any> {
     try {
       const transaction = {
         to: WBERA_CONTRACT,
         value: ethers.utils.parseEther(amount.toString()),
-        gasLimit: DEFAULT_GAS_LIMIT,
+        gasLimit: 21000,
       };
 
       const sentTransaction: ethers.providers.TransactionResponse =
@@ -43,24 +44,24 @@ export class BexApp extends DApp {
     }
   }
 
-  async unwrapBera(amount: number): Promise<any> {
-    try {
-      const wberaContract: ethers.Contract = new ethers.Contract(
-        WBERA_CONTRACT,
-        WBERA_CONTRACT_ABI,
-        this.wallet
-      );
+  public async unwrapBera(amount: number): Promise<any> {
+    const wberaContract: ethers.Contract = new ethers.Contract(
+      WBERA_CONTRACT,
+      WBERA_CONTRACT_ABI,
+      this.wallet
+    );
 
+    const nonce = this.wallet.provider.getTransactionCount(this.wallet.address);
+    const formattedAmount = ethers.utils.parseUnits(amount.toString(), 18);
+    const gasLimit = await wberaContract.estimateGas.withdraw(formattedAmount, {
+      nonce,
+    });
+
+    const args = [formattedAmount, { nonce, gasLimit }];
+
+    try {
       const unwrapTransaction: ethers.providers.TransactionResponse =
-        await wberaContract.withdraw(
-          ethers.utils.parseUnits(amount.toString(), 18),
-          {
-            gasLimit: DEFAULT_GAS_LIMIT,
-            nonce: this.wallet.provider.getTransactionCount(
-              this.wallet.address
-            ),
-          }
-        );
+        await wberaContract.withdraw(...args);
 
       await this.wallet.waitForTx("Unwrap", unwrapTransaction);
 
@@ -70,7 +71,39 @@ export class BexApp extends DApp {
     }
   }
 
-  async swapByApi(
+  private async getSwapPath(
+    tokenFrom: string,
+    tokenTo: string,
+    amount
+  ): Promise<any> {
+    const headers = {
+      authority: "https://bartio-bex-router.berachain.com",
+      accept: "*/*",
+      "cache-control": "no-cache",
+      origin: "https://bartio.bex.berachain.com/",
+      pragma: "no-cache",
+      referer: "https://bartio.bex.berachain.com/",
+      "user-agent": randomUseragent.getRandom(),
+    };
+
+    const params = {
+      fromAsset: tokenTo,
+      toAsset: tokenFrom,
+      amount: amount,
+    };
+
+    const response = await axios.get(
+      `https://bartio-bex-router.berachain.com/dex/route?fromAsset=${tokenFrom}&toAsset=${tokenTo}&amount=${amount}`,
+      {
+        headers: headers,
+        params: params,
+      }
+    );
+
+    return response;
+  }
+
+  public async swapByApi(
     tokenFrom: string,
     tokenTo: string,
     amount: number
@@ -78,6 +111,7 @@ export class BexApp extends DApp {
     let tokenFromBalance;
     let swapAmount;
     let swapsArray;
+    let gasLimit;
 
     if (tokenFrom !== BERA) {
       tokenFromBalance = await this.wallet.getTokenBalance(tokenFrom);
@@ -112,7 +146,7 @@ export class BexApp extends DApp {
       );
     }
 
-    const response = await getSwapPath(
+    const response = await this.getSwapPath(
       tokenFrom == BERA ? WBERA : tokenFrom,
       tokenTo == BERA ? WBERA : tokenTo,
       Number(swapAmount).toString()
@@ -145,25 +179,40 @@ export class BexApp extends DApp {
         }
       }
 
+      const value = tokenFrom != BERA ? 0 : swapAmount;
+
       try {
-        const transaction: any = await this.contract.multiSwap(
+        gasLimit = await this.contract.estimateGas.multiSwap(
           swapsArray,
           swapAmount,
           0,
-          {
-            gasLimit: DEFAULT_GAS_LIMIT,
-            value: tokenFrom != BERA ? 0 : swapAmount,
-          }
+          { value: value }
         );
+      } catch (e) {
+        gasLimit = DEFAULT_GAS_LIMIT;
+      }
 
+      const args = [
+        swapsArray,
+        swapAmount,
+        0,
+        {
+          value: value,
+          gasLimit: gasLimit,
+        },
+      ];
+
+      try {
+        const transaction: any = await this.contract.multiSwap(...args);
         await this.wallet.waitForTx("Swap", transaction);
+        return;
       } catch (error) {
         throw error;
       }
     }
   }
 
-  async addLiquidity(parameters: AddLiquidityParameters): Promise<any> {
+  public async addLiquidity(parameters: AddLiquidityParameters): Promise<any> {
     const contract = new ethers.Contract(
       APPROVE_LIQUIDITY,
       LIQUIDITY_ABI,
@@ -285,18 +334,29 @@ export class BexApp extends DApp {
         parameters.poolAddress,
       ]
     );
+    const value =
+      parameters.secondTokenAddress == BERA
+        ? ethers.utils.parseEther(parameters.amountToAdd.toString())
+        : 0;
+
+    const gasLimit = await contract.estimateGas.userCmd(128, poolCmdData, {
+      value: value,
+    });
+
+    const args = [
+      128,
+      poolCmdData,
+      {
+        value: value,
+        gasLimit: gasLimit,
+      },
+    ];
 
     try {
       logger.warn(
         `Trying to add ${tokenNames[firstTokenAddress]} and ${tokenNames[secondTokenAddress]} to pool`
       );
-      const transaction: any = await contract.userCmd(128, poolCmdData, {
-        gasLimit: DEFAULT_GAS_LIMIT,
-        value:
-          parameters.secondTokenAddress == BERA
-            ? ethers.utils.parseEther(parameters.amountToAdd.toString())
-            : 0,
-      });
+      const transaction: any = await contract.userCmd(...args);
 
       await this.wallet.waitForTx("Add liquidity", transaction);
     } catch (error) {

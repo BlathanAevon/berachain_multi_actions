@@ -26,17 +26,22 @@ export class VaultApp extends DApp {
       await this.wallet.getTokenDecimals(HONEY)
     );
 
+    const gasLimit = await this.contract.estimateGas.deposit(
+      stakeAmount,
+      this.wallet.address
+    );
+
+    const args = [
+      stakeAmount,
+      this.wallet.address,
+      {
+        gasLimit: gasLimit,
+      },
+    ];
+
     try {
-      const transaction = await this.contract.deposit(
-        stakeAmount,
-        this.wallet.address,
-        {
-          gasLimit: DEFAULT_GAS_LIMIT,
-        }
-      );
-
+      const transaction = await this.contract.deposit(...args);
       await this.wallet.waitForTx("Stake HONEY", transaction);
-
       return;
     } catch (error) {
       throw error;
@@ -49,13 +54,19 @@ export class VaultApp extends DApp {
       await this.wallet.getTokenDecimals(HONEY)
     );
 
+    const gasLimit = await this.contract.estimateGas.makeWithdrawRequest(
+      withdrawAmount
+    );
+
+    const args = [
+      withdrawAmount,
+      {
+        gasLimit: gasLimit,
+      },
+    ];
+
     try {
-      const transaction = await this.contract.makeWithdrawRequest(
-        withdrawAmount,
-        {
-          gasLimit: DEFAULT_GAS_LIMIT,
-        }
-      );
+      const transaction = await this.contract.makeWithdrawRequest(...args);
 
       await this.wallet.waitForTx("Withdraw staked HONEY", transaction);
 
@@ -98,16 +109,22 @@ export class VaultApp extends DApp {
       this.wallet
     );
 
+    const formattedAmount = ethers.utils.parseEther(
+      parameters.amountToAdd.toString()
+    );
+
+    const gasLimit = await this.contract.estimateGas.stake(formattedAmount);
+
+    const args = [
+      formattedAmount,
+      {
+        gasLimit: gasLimit,
+      },
+    ];
+
     try {
-      const transaction = await contract.stake(
-        ethers.utils.parseEther(parameters.amountToAdd.toString()),
-        {
-          gasLimit: DEFAULT_GAS_LIMIT,
-        }
-      );
-
+      const transaction = await contract.stake(...args);
       await this.wallet.waitForTx("Deposit LP tokens", transaction);
-
       return;
     } catch (error) {
       throw error;
